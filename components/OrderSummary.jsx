@@ -55,6 +55,7 @@ const OrderSummary = () => {
       }
 
       const token = await getToken()
+      
       const {data} = await axios.post('/api/order/create',{
         address: selectedAddress._id,
         items: cartItemsArray

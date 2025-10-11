@@ -6,6 +6,8 @@ import { useAppContext } from "@/context/AppContext";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Loading from "@/components/Loading";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const MyOrders = () => {
 
@@ -20,15 +22,20 @@ const MyOrders = () => {
             const {data} = await axios.get('/api/order/list', {headers:{Authorization: `Bearer ${token}`}});
             if (data.success) {
                 setOrders(data.orders.reverse())
+                setLoading(false)
+            } else{
+                toast.error(data.message)
             }
         } catch(error) {
-
+            toast.error(error.message)
         }
     }
 
     useEffect(() => {
-        fetchOrders();
-    }, []);
+        if(user){
+            fetchOrders();
+        }
+    }, [user]);
 
     return (
         <>
