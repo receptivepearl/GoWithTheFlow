@@ -1,0 +1,53 @@
+'use client'
+import React from "react";
+import { useRouter } from "next/navigation";
+import EnhancedNavbar from "@/components/EnhancedNavbar";
+import Footer from "@/components/Footer";
+import HeroSection from "@/components/HeroSection";
+import FeaturesSection from "@/components/FeaturesSection";
+import StatsSection from "@/components/StatsSection";
+import { useAppContext } from "@/context/AppContext";
+
+const Home = () => {
+  const router = useRouter();
+  const { user, userRole } = useAppContext();
+
+  const handleRoleSelection = (role) => {
+    if (user) {
+      // User is already logged in, redirect based on role
+      if (userRole === 'donor') {
+        router.push('/donor/discover');
+      } else if (userRole === 'organization') {
+        router.push('/organization/dashboard');
+      } else if (userRole === 'admin') {
+        router.push('/admin/dashboard');
+      }
+    } else {
+      // User not logged in, redirect to connect page with role selection
+      router.push(`/connect?role=${role}`);
+    }
+  };
+
+  return (
+    <>
+      <EnhancedNavbar />
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
+        {/* Hero Section */}
+        <HeroSection 
+          onRoleSelection={handleRoleSelection}
+          user={user}
+          userRole={userRole}
+        />
+        
+        {/* Features Section */}
+        <FeaturesSection />
+        
+        {/* Stats Section */}
+        <StatsSection />
+      </div>
+      <Footer />
+    </>
+  );
+};
+
+export default Home;
