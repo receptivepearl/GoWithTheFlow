@@ -52,7 +52,7 @@ const FeaturesSection = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             How We Make a Difference
           </h2>
           <motion.div
@@ -79,7 +79,7 @@ const FeaturesSection = () => {
               className="group"
             >
               {/* Glass Morphism Card */}
-              <div className="relative p-8 bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
+              <div className="relative p-6 sm:p-8 bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
                 {/* Animated Background Gradient */}
                 <motion.div
                   className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}

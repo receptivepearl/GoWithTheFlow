@@ -195,11 +195,11 @@ const UserDashboard = () => {
 
   const AboutContent = () => (
     <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-lg border border-pink-100">
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">About Go with the Flow</h2>
+      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">About GirlsWhoGive</h2>
       
       <div className="space-y-6 text-lg text-gray-700">
         <p>
-          Go with the Flow is a platform dedicated to ending period poverty by connecting 
+          GirlsWhoGive is a platform dedicated to ending period poverty by connecting 
           compassionate donors with organizations that serve women in need. We believe that 
           access to menstrual products is a fundamental right, not a privilege.
         </p>

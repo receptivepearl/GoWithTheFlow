@@ -9,11 +9,11 @@ const Footer = () => {
           <div className="flex items-center space-x-3 mb-6">
             <Logo size="large" />
             <span className="text-2xl font-bold text-gray-900">
-              Go with the <span className="text-pink-600">Flow</span>
+              <span className="text-pink-600">Girls</span>Who<span className="text-pink-600">Give</span>
             </span>
           </div>
           <p className="text-sm">
-            Go with the Flow connects donors with verified organizations to
+            GirlsWhoGive connects donors with verified organizations to
             provide essential menstrual products to people in need. Together,
             we make dignity accessible—one donation at a time.
           </p>
@@ -44,13 +44,13 @@ const Footer = () => {
             <h2 className="font-medium text-gray-900 mb-5">Get in touch</h2>
             <div className="text-sm space-y-2">
               <p>+1 (555) 123-4567</p>
-              <p>support@gowiththeflow.org</p>
+              <p>support@girlswhogive.org</p>
             </div>
           </div>
         </div>
       </div>
       <p className="py-4 text-center text-xs md:text-sm">
-        © {new Date().getFullYear()} Go with the Flow. All rights reserved.
+        © {new Date().getFullYear()} GirlsWhoGive. All rights reserved.
       </p>
     </footer>
   );

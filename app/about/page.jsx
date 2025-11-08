@@ -10,12 +10,32 @@ const About = () => {
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
         <div className="px-6 md:px-16 lg:px-32 py-20">
           <div className="max-w-4xl mx-auto">
+            {/* Bio Section */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 mb-12 shadow-lg border border-pink-100">
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                {/* Profile Picture */}
+                <div className="flex-shrink-0">
+                  <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center border-4 border-pink-300 shadow-lg">
+                    <span className="text-4xl md:text-5xl">👤</span>
+                  </div>
+                </div>
+                {/* Bio Content */}
+                <div className="flex-1 text-center md:text-left">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">About the Founder</h2>
+                  <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
+                    [Your bio will go here. This is a placeholder section where you can add information about yourself, 
+                    your passion for ending period poverty, and what inspired you to create GirlsWhoGive.]
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Hero Section */}
             <div className="text-center mb-16">
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-                About <span className="text-pink-600">Go with the Flow</span>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                About <span className="text-pink-600">GirlsWhoGive</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-600 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 leading-relaxed">
                 We're on a mission to end period poverty by connecting compassionate donors 
                 with organizations that serve women in need.
               </p>
@@ -23,14 +43,14 @@ const About = () => {
 
             {/* Mission Section */}
             <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 mb-12 shadow-lg border border-pink-100">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
-              <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-6">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
+              <p className="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed mb-6">
                 We believe that access to menstrual products is a fundamental right, not a privilege. 
                 Period poverty affects millions of women and girls worldwide, forcing them to choose 
                 between basic necessities and essential hygiene products.
               </p>
               <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-                Go with the Flow bridges the gap between generous donors and organizations serving 
+                GirlsWhoGive bridges the gap between generous donors and organizations serving 
                 women's shelters, community health centers, and nonprofits. Together, we're creating 
                 a world where no woman has to face period poverty alone.
               </p>
@@ -38,7 +58,7 @@ const About = () => {
 
             {/* How It Works */}
             <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 mb-12 shadow-lg border border-pink-100">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">How It Works</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-8">How It Works</h2>
               
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center">
@@ -78,8 +98,8 @@ const About = () => {
 
             {/* Verified Organizations */}
             <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 mb-12 shadow-lg border border-pink-100">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Verified Organizations</h2>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Verified Organizations</h2>
+              <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
                 Organizations with a ✓ checkmark are verified partners who have completed our 
                 rigorous registration process. This ensures that:
               </p>
@@ -118,7 +138,7 @@ const About = () => {
 
             {/* Impact Statistics */}
             <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 mb-12 shadow-lg border border-pink-100">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Our Impact</h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-8">Our Impact</h2>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div className="text-center">
@@ -142,20 +162,20 @@ const About = () => {
 
             {/* Call to Action */}
             <div className="bg-gradient-to-r from-pink-600 to-purple-600 rounded-3xl p-8 md:p-12 text-center text-white shadow-lg">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Make a Difference?</h2>
-              <p className="text-xl mb-8 opacity-90">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">Ready to Make a Difference?</h2>
+              <p className="text-lg sm:text-xl mb-8 opacity-90">
                 Join our community of compassionate donors and help end period poverty in your area.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button 
                   onClick={() => window.location.href = '/user-dashboard'}
-                  className="bg-white text-pink-600 px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-gray-100 transition-colors"
+                  className="bg-white text-pink-600 px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-base sm:text-lg hover:bg-gray-100 transition-colors"
                 >
                   Start Donating
                 </button>
                 <button 
                   onClick={() => window.location.href = '/organization-dashboard'}
-                  className="bg-purple-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-purple-800 transition-colors border border-white/30"
+                  className="bg-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-base sm:text-lg hover:bg-purple-800 transition-colors border border-white/30"
                 >
                   Join as Organization
                 </button>

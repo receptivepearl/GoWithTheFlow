@@ -311,7 +311,7 @@ const AdminDashboard = () => {
       
       <div className="space-y-6 text-lg text-gray-700">
         <p>
-          Welcome to the Go with the Flow administrator dashboard. This is your central hub for 
+          Welcome to the GirlsWhoGive administrator dashboard. This is your central hub for 
           managing the platform, approving organizations, and monitoring the overall impact of 
           our community.
         </p>
@@ -379,7 +379,7 @@ const AdminDashboard = () => {
               Administrator Dashboard
             </h1>
             <p className="text-lg text-gray-600">
-              Manage the Go with the Flow platform
+              Manage the GirlsWhoGive platform
             </p>
           </div>
 

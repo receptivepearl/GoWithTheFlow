@@ -87,7 +87,7 @@ const ConnectContent = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Connect with Go with the Flow
+              Connect with GirlsWhoGive
             </h1>
             <p className="text-lg text-gray-600">
               Choose your role and join our community

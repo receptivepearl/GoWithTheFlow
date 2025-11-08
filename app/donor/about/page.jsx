@@ -30,7 +30,7 @@ const DonorAboutPage = () => {
             {/* Header */}
             <div className="text-center mb-16">
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-                About <span className="text-pink-600">Go with the Flow</span>
+                About <span className="text-pink-600">GirlsWhoGive</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 leading-relaxed">
                 We're on a mission to end period poverty by connecting compassionate donors 
@@ -47,7 +47,7 @@ const DonorAboutPage = () => {
                 between basic necessities and essential hygiene products.
               </p>
               <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-                Go with the Flow bridges the gap between generous donors and organizations serving 
+                GirlsWhoGive bridges the gap between generous donors and organizations serving 
                 women's shelters, community health centers, and nonprofits. Together, we're creating 
                 a world where no woman has to face period poverty alone.
               </p>

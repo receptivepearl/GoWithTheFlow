@@ -7,8 +7,9 @@ import { useAppContext } from "@/context/AppContext";
 
 const MyDonationsPage = () => {
   const router = useRouter();
-  const { user, userRole, donations, fetchDonations } = useAppContext();
+  const { user, userRole, donations, fetchDonations, cancelDonation } = useAppContext();
   const [loading, setLoading] = useState(false);
+  const [cancellingId, setCancellingId] = useState(null);
 
   // Redirect if not authenticated or not a donor
   useEffect(() => {
@@ -60,6 +61,21 @@ const MyDonationsPage = () => {
     });
   };
 
+  const handleCancelDonation = async (donationId) => {
+    if (!confirm('Are you sure you want to cancel this donation commitment?')) {
+      return;
+    }
+
+    setCancellingId(donationId);
+    try {
+      await cancelDonation(donationId);
+    } catch (error) {
+      // Error is already handled in the context with toast
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
   // Removed loading state to prevent glitching
 
   return (
@@ -70,7 +86,7 @@ const MyDonationsPage = () => {
           
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               My Donation Commitments
             </h1>
             <p className="text-lg text-gray-600">
@@ -212,8 +228,12 @@ const MyDonationsPage = () => {
                       </button>
                     )}
                     {donation.status !== 'delivered' && donation.status !== 'cancelled' && (
-                      <button className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors">
-                        Cancel Commitment
+                      <button 
+                        onClick={() => handleCancelDonation(donation._id || donation.id)}
+                        disabled={cancellingId === (donation._id || donation.id)}
+                        className="bg-red-600 text-white px-4 py-2.5 rounded-lg text-sm sm:text-base hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+                      >
+                        {cancellingId === (donation._id || donation.id) ? 'Cancelling...' : 'Cancel Commitment'}
                       </button>
                     )}
                   </div>

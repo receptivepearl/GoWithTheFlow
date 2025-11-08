@@ -61,7 +61,7 @@ const Navbar = () => {
                   <Link href="/" className="flex items-center space-x-3">
                     <Logo size="default" />
                     <span className="text-2xl font-bold text-gray-900">
-                      Go with the <span className="text-pink-600">Flow</span>
+                      <span className="text-pink-600">Girls</span>Who<span className="text-pink-600">Give</span>
                     </span>
                   </Link>
 

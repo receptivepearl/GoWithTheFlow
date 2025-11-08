@@ -156,6 +156,24 @@ export const AppContextProvider = (props) => {
         }
     }
 
+    const cancelDonation = async (donationId) => {
+        try {
+            const token = await getToken()
+            const { data } = await axios.put('/api/donations/cancel', { donationId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            if (data.success) {
+                toast.success('Donation commitment cancelled successfully')
+                fetchDonations() // Refresh donations list
+                return data.donation
+            }
+        } catch (error) {
+            console.error('Error cancelling donation:', error)
+            toast.error(error.response?.data?.message || 'Error cancelling donation commitment')
+            throw error
+        }
+    }
+
     useEffect(() => {
         if (user) {
             fetchUserData()
@@ -181,7 +199,7 @@ export const AppContextProvider = (props) => {
         loading, setLoading,
         fetchUserData, createUser,
         fetchDonations, createDonation,
-        createOrganization
+        createOrganization, cancelDonation
     }
 
     return (

@@ -70,8 +70,7 @@ const HeroSection = ({ onRoleSelection, user, userRole }) => {
               >
                 <Logo size="xlarge" />
                 <div>
-                  <h1 className="text-5xl md:text-7xl font-bold text-gray-900 leading-tight">
-                    Go with the{' '}
+                  <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-gray-900 leading-tight">
                     <motion.span
                       className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600"
                       animate={{
@@ -86,7 +85,24 @@ const HeroSection = ({ onRoleSelection, user, userRole }) => {
                         backgroundSize: '200% 200%'
                       }}
                     >
-                      Flow
+                      Girls
+                    </motion.span>
+                    Who
+                    <motion.span
+                      className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600"
+                      animate={{
+                        backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      style={{
+                        backgroundSize: '200% 200%'
+                      }}
+                    >
+                      Give
                     </motion.span>
                   </h1>
                   <motion.div
@@ -103,7 +119,7 @@ const HeroSection = ({ onRoleSelection, user, userRole }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-xl md:text-2xl text-gray-600 leading-relaxed"
+                className="text-lg sm:text-xl md:text-2xl text-gray-600 leading-relaxed"
               >
                 Connecting compassionate donors with organizations to provide menstrual products 
                 to those in need, creating a world where period poverty is history.
@@ -120,7 +136,7 @@ const HeroSection = ({ onRoleSelection, user, userRole }) => {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => onRoleSelection('donor')}
-                  className="group relative px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+                  className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-2xl font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
                 >
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -144,7 +160,7 @@ const HeroSection = ({ onRoleSelection, user, userRole }) => {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => onRoleSelection('organization')}
-                  className="px-8 py-4 border-2 border-purple-600 text-purple-600 rounded-2xl font-semibold text-lg hover:bg-purple-600 hover:text-white transition-all duration-300"
+                  className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-purple-600 text-purple-600 rounded-2xl font-semibold text-base sm:text-lg hover:bg-purple-600 hover:text-white transition-all duration-300"
                 >
                   Join as Organization
                 </motion.button>

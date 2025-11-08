@@ -5,8 +5,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import EnhancedNavbar from "@/components/EnhancedNavbar";
 import Footer from "@/components/Footer";
+import ContactPopup from "@/components/ContactPopup";
 import { useAppContext } from "@/context/AppContext";
 import { locationService } from "@/lib/locationService";
+import axios from "axios";
 
 
 const DiscoverPage = () => {
@@ -19,6 +21,9 @@ const DiscoverPage = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [locationError, setLocationError] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [selectedOrganization, setSelectedOrganization] = useState(null);
+  const [isContactPopupOpen, setIsContactPopupOpen] = useState(false);
+  const [loadingOrgDetails, setLoadingOrgDetails] = useState(false);
 
   // Redirect if not authenticated or not a donor
   useEffect(() => {
@@ -117,12 +122,38 @@ const DiscoverPage = () => {
     await loadOrganizations(userLocation, searchQuery, verified);
   };
 
-  const handleOrganizationClick = (organization) => {
-    // FIX: Check for isGooglePlace to prevent placing order at unverified places
+  const handleOrganizationClick = async (organization) => {
+    // If verified and not a Google Place, go to place order
     if (organization.verified && !organization.isGooglePlace) {
       router.push(`/donor/place-order?orgId=${organization.id}`);
     } else {
-      alert("This organization is not yet verified for direct donations. Please contact them directly or visit in person.");
+      // For unverified organizations, show contact popup
+      // Try to fetch full organization details if it's a registered organization
+      let orgDetails = { ...organization };
+      
+      if (!organization.isGooglePlace && organization.id) {
+        // It's a registered organization, try to fetch full details
+        setLoadingOrgDetails(true);
+        try {
+          const response = await axios.get(`/api/organizations/${organization.id}`);
+          if (response.data.success) {
+            orgDetails = {
+              ...organization,
+              email: response.data.organization.email || organization.email,
+              phone: response.data.organization.phone || organization.phone,
+              address: response.data.organization.address || organization.address,
+            };
+          }
+        } catch (error) {
+          console.error('Error fetching organization details:', error);
+          // Use the organization data we already have
+        } finally {
+          setLoadingOrgDetails(false);
+        }
+      }
+      
+      setSelectedOrganization(orgDetails);
+      setIsContactPopupOpen(true);
     }
   };
 
@@ -131,12 +162,28 @@ const DiscoverPage = () => {
   return (
     <>
       <EnhancedNavbar />
+      <ContactPopup 
+        organization={selectedOrganization}
+        isOpen={isContactPopupOpen}
+        onClose={() => {
+          setIsContactPopupOpen(false);
+          setSelectedOrganization(null);
+        }}
+      />
+      {loadingOrgDetails && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 shadow-lg">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mx-auto mb-2"></div>
+            <p className="text-gray-600">Loading contact information...</p>
+          </div>
+        </div>
+      )}
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-16">
         <div className="px-6 md:px-16 lg:px-32 py-8">
           
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Discover Organizations
             </h1>
             <p className="text-lg text-gray-600">
@@ -161,7 +208,7 @@ const DiscoverPage = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                   />
                 </div>
                 <button
@@ -303,7 +350,7 @@ const DiscoverPage = () => {
                   </div>
                   <button 
                     onClick={() => handleOrganizationClick(org)}
-                    className={`px-6 py-2 rounded-full font-medium transition-colors ${
+                    className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-full font-medium text-sm sm:text-base transition-colors min-h-[44px] ${
                       org.verified && !org.isGooglePlace
                         ? 'bg-pink-600 text-white hover:bg-pink-700'
                         : 'bg-gray-600 text-white hover:bg-gray-700'
