@@ -3,47 +3,81 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import EnhancedNavbar from "@/components/EnhancedNavbar";
 import Footer from "@/components/Footer";
+import { useAppContext } from "@/context/AppContext";
 import axios from "axios";
 
 const OrganizationDashboard = () => {
   const router = useRouter();
+  const { user, userRole, getToken } = useAppContext();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [organizationData, setOrganizationData] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    totalProducts: 0,
+    thisMonthOrders: 0
+  });
   const [loading, setLoading] = useState(true);
 
+  // Redirect if not authenticated or not an organization
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const [orgRes, donationsRes] = await Promise.all([
-          axios.get('/api/organizations/me'),
-          axios.get('/api/donations/organization')
-        ]);
+    // Wait a bit for userRole to load before redirecting
+    if (!user) {
+      router.push('/connect?role=organization');
+      return;
+    }
+    // Only redirect if userRole is explicitly set and not organization
+    // This prevents premature redirects while userRole is still loading
+    if (userRole !== null && userRole !== undefined && userRole !== 'organization') {
+      router.push('/');
+      return;
+    }
+  }, [user, userRole, router]);
 
-        if (orgRes.data?.success) {
-          setOrganizationData(orgRes.data.organization);
-        }
-        if (donationsRes.data?.success) {
-          // Normalize donations to existing structure expected by UI
-          const mapped = donationsRes.data.donations.map(d => ({
-            id: d._id,
-            donorName: d.donorName,
-            items: d.items,
-            totalItems: d.totalItems,
-            date: new Date(d.date).toISOString().slice(0,10),
-            status: d.status,
-            notes: d.notes || ''
-          }));
-          setOrders(mapped);
-        }
-      } catch (e) {
-        console.error('Error loading organization dashboard:', e);
-      } finally {
-        setLoading(false);
+  const loadData = async () => {
+    try {
+      const token = await getToken();
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      const [orgRes, donationsRes, statsRes] = await Promise.all([
+        axios.get('/api/organizations/me', { headers }),
+        axios.get('/api/donations/organization', { headers }),
+        axios.get('/api/organizations/stats', { headers })
+      ]);
+
+      if (orgRes.data?.success) {
+        setOrganizationData(orgRes.data.organization);
       }
-    };
+      if (donationsRes.data?.success) {
+        // Normalize donations to existing structure expected by UI
+        const mapped = donationsRes.data.donations.map(d => ({
+          id: d._id,
+          donorName: d.donorName,
+          items: d.items,
+          totalItems: d.totalItems,
+          date: new Date(d.date).toISOString().slice(0,10),
+          status: d.status,
+          notes: d.notes || ''
+        }));
+        setOrders(mapped);
+      }
+      if (statsRes.data?.success) {
+        setStats(statsRes.data.stats);
+      }
+    } catch (e) {
+      console.error('Error loading organization dashboard:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadData();
+    
+    // Refresh data every 30 seconds for real-time updates
+    const interval = setInterval(loadData, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const updateOrderStatus = async (orderId, newStatus) => {
@@ -55,6 +89,8 @@ const OrganizationDashboard = () => {
         setOrders(prev => prev.map(order => 
           order.id === orderId ? { ...order, status: newStatus } : order
         ));
+        // Refresh stats after status update
+        loadData();
       }
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -82,12 +118,12 @@ const OrganizationDashboard = () => {
   const DashboardContent = () => (
     <div className="space-y-8">
       {/* Stats Cards */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-pink-100">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">Total Orders</p>
-              <p className="text-3xl font-bold text-gray-900">{organizationData?.totalOrders || 0}</p>
+              <p className="text-3xl font-bold text-gray-900">{stats.totalOrders.toLocaleString()}</p>
             </div>
             <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
               <span className="text-2xl">📦</span>
@@ -99,7 +135,7 @@ const OrganizationDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">Total Products</p>
-              <p className="text-3xl font-bold text-gray-900">{organizationData?.totalProducts || 0}</p>
+              <p className="text-3xl font-bold text-gray-900">{stats.totalProducts.toLocaleString()}</p>
             </div>
             <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
               <span className="text-2xl">💝</span>
@@ -111,22 +147,10 @@ const OrganizationDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">This Month</p>
-              <p className="text-3xl font-bold text-gray-900">{organizationData?.thisMonthOrders || 0}</p>
+              <p className="text-3xl font-bold text-gray-900">{stats.thisMonthOrders.toLocaleString()}</p>
             </div>
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
               <span className="text-2xl">📅</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-pink-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm">Monthly Products</p>
-              <p className="text-3xl font-bold text-gray-900">{organizationData?.thisMonthProducts || 0}</p>
-            </div>
-            <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
-              <span className="text-2xl">📈</span>
             </div>
           </div>
         </div>

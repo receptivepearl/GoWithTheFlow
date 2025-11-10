@@ -20,13 +20,19 @@ export async function GET(request) {
             });
         }
 
-        // Get analytics data
+        // Get analytics data - count ALL users (donors, organizations, admins)
         const totalUsers = await User.countDocuments();
         const totalOrganizations = await Organization.countDocuments();
         const verifiedOrganizations = await Organization.countDocuments({ verified: true });
-        const totalDonations = await Donation.countDocuments();
+        const totalDonations = await Donation.countDocuments({ status: { $ne: 'cancelled' } });
         
+        // Calculate total products donated (excluding cancelled donations)
         const totalProductsDonated = await Donation.aggregate([
+            {
+                $match: {
+                    status: { $ne: 'cancelled' }
+                }
+            },
             {
                 $group: {
                     _id: null,
@@ -40,13 +46,15 @@ export async function GET(request) {
         thisMonth.setHours(0, 0, 0, 0);
 
         const thisMonthDonations = await Donation.countDocuments({
-            date: { $gte: thisMonth.getTime() }
+            date: { $gte: thisMonth.getTime() },
+            status: { $ne: 'cancelled' }
         });
 
         const thisMonthProducts = await Donation.aggregate([
             {
                 $match: {
-                    date: { $gte: thisMonth.getTime() }
+                    date: { $gte: thisMonth.getTime() },
+                    status: { $ne: 'cancelled' }
                 }
             },
             {

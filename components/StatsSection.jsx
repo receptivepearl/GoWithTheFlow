@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
+import axios from 'axios';
 
 const AnimatedCounter = ({ end, duration = 2, suffix = '' }) => {
   const [count, setCount] = useState(0);
@@ -49,13 +50,39 @@ const AnimatedCounter = ({ end, duration = 2, suffix = '' }) => {
 const StatsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [stats, setStats] = useState([
+    { number: 0, suffix: '+', label: 'Organizations', icon: '🏢' },
+    { number: 0, suffix: '+', label: 'Products Donated', icon: '📦' },
+    { number: 0, suffix: '+', label: 'Active Donors', icon: '👥' },
+    { number: 0, suffix: '+', label: 'Cities', icon: '🌍' }
+  ]);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    { number: 500, suffix: '+', label: 'Organizations', icon: '🏢' },
-    { number: 10000, suffix: '+', label: 'Products Donated', icon: '📦' },
-    { number: 2000, suffix: '+', label: 'Active Donors', icon: '👥' },
-    { number: 50, suffix: '+', label: 'Cities', icon: '🌍' }
-  ];
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get('/api/stats/public');
+        if (response.data.success) {
+          const data = response.data.stats;
+          setStats([
+            { number: data.totalOrganizations, suffix: '+', label: 'Organizations', icon: '🏢' },
+            { number: data.totalProductsDonated, suffix: '+', label: 'Products Donated', icon: '📦' },
+            { number: data.totalUsers, suffix: '+', label: 'Active Donors', icon: '👥' },
+            { number: data.totalCities, suffix: '+', label: 'Cities', icon: '🌍' }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+    // Refresh stats every 30 seconds
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section ref={ref} className="py-20 px-6 md:px-16 lg:px-32 bg-gradient-to-br from-gray-50 to-white">

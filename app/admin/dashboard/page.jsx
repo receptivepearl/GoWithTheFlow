@@ -14,7 +14,7 @@ const AdminDashboard = () => {
     totalUsers: 0,
     totalOrganizations: 0,
     totalDonations: 0,
-    totalProducts: 0
+    totalProductsDonated: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +24,14 @@ const AdminDashboard = () => {
       return;
     }
     if (userRole && userRole !== 'admin') {
-      router.push(`/${userRole}/dashboard`); // Redirect if not an admin
+      // Redirect based on role to correct dashboard
+      if (userRole === 'donor') {
+        router.push('/donor/discover');
+      } else if (userRole === 'organization') {
+        router.push('/organization-dashboard');
+      } else {
+        router.push('/');
+      }
       return;
     }
 
@@ -49,6 +56,11 @@ const AdminDashboard = () => {
     };
 
     fetchAnalytics();
+    
+    // Refresh analytics every 30 seconds for real-time updates
+    const interval = setInterval(fetchAnalytics, 30000);
+    
+    return () => clearInterval(interval);
   }, [user, userRole, router, getToken]);
 
   if (loading) {
@@ -129,7 +141,7 @@ const AdminDashboard = () => {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Products Donated</p>
-                  <p className="text-2xl font-bold text-gray-900">{analytics.totalProducts}</p>
+                  <p className="text-2xl font-bold text-gray-900">{analytics.totalProductsDonated?.toLocaleString() || 0}</p>
                 </div>
               </div>
             </div>
@@ -153,7 +165,20 @@ const AdminDashboard = () => {
                   View All Donations
                 </button>
                 <button
-                  onClick={() => window.location.reload()}
+                  onClick={async () => {
+                    try {
+                      const token = await getToken();
+                      const response = await axios.get('/api/admin/analytics', {
+                        headers: { Authorization: `Bearer ${token}` }
+                      });
+                      if (response.data.success) {
+                        setAnalytics(response.data.analytics);
+                        toast.success('Analytics refreshed');
+                      }
+                    } catch (error) {
+                      toast.error('Failed to refresh analytics');
+                    }
+                  }}
                   className="w-full bg-gray-600 text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-gray-700 transition-colors duration-200 shadow-md"
                 >
                   Refresh Analytics

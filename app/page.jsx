@@ -18,7 +18,7 @@ const Home = () => {
       if (userRole === 'donor') {
         router.push('/donor/discover');
       } else if (userRole === 'organization') {
-        router.push('/organization/dashboard');
+        router.push('/organization-dashboard');
       } else if (userRole === 'admin') {
         router.push('/admin/dashboard');
       }

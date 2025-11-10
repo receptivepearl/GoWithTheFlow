@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect, Suspense } from "react";
+import { motion } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import EnhancedNavbar from "@/components/EnhancedNavbar";
 import Footer from "@/components/Footer";
@@ -22,6 +23,8 @@ const ConnectContent = () => {
     website: '',
     taxId: ''
   });
+  const [adminInvitationCode, setAdminInvitationCode] = useState('');
+  const [invitationError, setInvitationError] = useState('');
 
   useEffect(() => {
     // If user is already logged in and has a role, redirect appropriately
@@ -29,7 +32,7 @@ const ConnectContent = () => {
       if (userRole === 'donor') {
         router.push('/donor/discover');
       } else if (userRole === 'organization') {
-        router.push('/organization/dashboard');
+        router.push('/organization-dashboard');
       } else if (userRole === 'admin') {
         router.push('/admin/dashboard');
       }
@@ -48,6 +51,15 @@ const ConnectContent = () => {
         return;
       }
       localStorage.setItem('organizationData', JSON.stringify(organizationForm));
+    }
+    
+    if (selectedRole === 'admin') {
+      // Check invitation code for admin
+      if (adminInvitationCode.trim() !== 'BlueParrot') {
+        setInvitationError('Invalid invitation code. Please contact the platform administrators for access.');
+        return;
+      }
+      setInvitationError('');
     }
     
     // Store the selected role in localStorage for after signup
@@ -290,11 +302,42 @@ const ConnectContent = () => {
               )}
 
               {selectedRole === 'admin' && (
-                <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
-                  <p className="text-sm text-yellow-800">
-                    <strong>Note:</strong> Administrator access requires approval from platform administrators. 
-                    Contact the platform team for access.
-                  </p>
+                <div className="mt-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Invitation Code *
+                    </label>
+                    <input
+                      type="text"
+                      value={adminInvitationCode}
+                      onChange={(e) => {
+                        setAdminInvitationCode(e.target.value);
+                        setInvitationError('');
+                      }}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
+                        invitationError ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                      }`}
+                      placeholder="Enter invitation code"
+                    />
+                    {invitationError && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-2 text-sm text-red-600 flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        </svg>
+                        {invitationError}
+                      </motion.p>
+                    )}
+                  </div>
+                  <div className="p-4 bg-yellow-50 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Note:</strong> Administrator access requires a valid invitation code. 
+                      Please contact the platform administrators if you need access.
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
