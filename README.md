@@ -1,0 +1,1 @@
+GirlsWhoGive is an app I'm working on to connect menstrual product donors to women's shelters to eradicate period poverty and make donating an easier process for all. Organizations can track and approve incoming orders, and users can connect to organizations near them easier.
