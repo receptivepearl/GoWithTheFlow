@@ -81,6 +81,33 @@ const ContactPopup = ({ organization, isOpen, onClose }) => {
                 </motion.div>
               )}
 
+              {/* Website (shown if no email) */}
+              {!organization.email && organization.website && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex items-start gap-3 p-4 bg-pink-50 rounded-xl border border-pink-100"
+                >
+                  <div className="flex-shrink-0 w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-gray-500 mb-1">Website</p>
+                    <a 
+                      href={organization.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-pink-600 hover:text-pink-700 font-medium break-all"
+                    >
+                      {organization.website}
+                    </a>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Phone */}
               {organization.phone && (
                 <motion.div
@@ -130,7 +157,7 @@ const ContactPopup = ({ organization, isOpen, onClose }) => {
               )}
 
               {/* Message if no contact info */}
-              {!organization.email && !organization.phone && !organization.address && (
+              {!organization.email && !organization.website && !organization.phone && !organization.address && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -157,6 +184,16 @@ const ContactPopup = ({ organization, isOpen, onClose }) => {
                   className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-pink-600 hover:to-purple-700 transition-all text-center"
                 >
                   Send Email
+                </a>
+              )}
+              {!organization.email && organization.website && (
+                <a
+                  href={organization.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-pink-600 hover:to-purple-700 transition-all text-center"
+                >
+                  Visit Website
                 </a>
               )}
               {organization.phone && (

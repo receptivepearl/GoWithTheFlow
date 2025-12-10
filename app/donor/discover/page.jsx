@@ -131,10 +131,10 @@ const DiscoverPage = () => {
       // Try to fetch full organization details if it's a registered organization
       let orgDetails = { ...organization };
       
-      if (!organization.isGooglePlace && organization.id) {
-        // It's a registered organization, try to fetch full details
-        setLoadingOrgDetails(true);
-        try {
+      setLoadingOrgDetails(true);
+      try {
+        if (!organization.isGooglePlace && organization.id) {
+          // It's a registered organization, try to fetch full details
           const response = await axios.get(`/api/organizations/${organization.id}`);
           if (response.data.success) {
             orgDetails = {
@@ -144,12 +144,27 @@ const DiscoverPage = () => {
               address: response.data.organization.address || organization.address,
             };
           }
-        } catch (error) {
-          console.error('Error fetching organization details:', error);
-          // Use the organization data we already have
-        } finally {
-          setLoadingOrgDetails(false);
+        } else if (organization.isGooglePlace && organization.id) {
+          // It's a Google Place, fetch detailed contact information
+          try {
+            const placeDetails = await locationService.getPlaceDetails(organization.id);
+            orgDetails = {
+              ...organization,
+              phone: placeDetails.formatted_phone_number || placeDetails.international_phone_number || organization.phone || null,
+              website: placeDetails.website || organization.website || null,
+              email: organization.email || null, // Google Places doesn't provide email
+              address: placeDetails.formatted_address || placeDetails.vicinity || organization.address,
+            };
+          } catch (error) {
+            console.error('Error fetching Google Place details:', error);
+            // Use the organization data we already have
+          }
         }
+      } catch (error) {
+        console.error('Error fetching organization details:', error);
+        // Use the organization data we already have
+      } finally {
+        setLoadingOrgDetails(false);
       }
       
       setSelectedOrganization(orgDetails);

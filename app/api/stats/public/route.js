@@ -8,7 +8,7 @@ export async function GET(request) {
     try {
         await connectDB();
 
-        // Get public stats (no auth required)
+        // Get public stats 
         const totalUsers = await User.countDocuments({ role: 'donor' });
         const totalOrganizations = await Organization.countDocuments({ verified: true });
         const totalDonations = await Donation.countDocuments({ status: { $ne: 'cancelled' } });

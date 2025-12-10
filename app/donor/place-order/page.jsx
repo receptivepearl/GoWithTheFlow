@@ -241,14 +241,26 @@ const PlaceOrderContent = () => {
                         <div className="flex items-center gap-3">
                           <button
                             onClick={() => updateQuantity(item.productType, item.quantity - 1)}
-                            className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center"
+                            className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+                            aria-label="Decrease quantity"
                           >
                             -
                           </button>
-                          <span className="w-8 text-center font-medium">{item.quantity}</span>
+                          <input
+                            type="number"
+                            min="0"
+                            value={item.quantity}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value) || 0;
+                              updateQuantity(item.productType, value);
+                            }}
+                            className="w-20 text-center font-medium border border-gray-300 rounded-lg px-2 py-1 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                            aria-label={`Quantity of ${item.name}`}
+                          />
                           <button
                             onClick={() => updateQuantity(item.productType, item.quantity + 1)}
-                            className="w-8 h-8 rounded-full bg-pink-600 hover:bg-pink-700 text-white flex items-center justify-center"
+                            className="w-8 h-8 rounded-full bg-pink-600 hover:bg-pink-700 text-white flex items-center justify-center transition-colors"
+                            aria-label="Increase quantity"
                           >
                             +
                           </button>

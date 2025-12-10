@@ -167,7 +167,12 @@ const UserDashboard = () => {
         
         if (response.ok) {
           const data = await response.json();
-          setOrganizations(data.data);
+          if (data.success && Array.isArray(data.organizations)) {
+            setOrganizations(data.organizations);
+          } else {
+            // Fallback to mock data if API response is invalid
+            setOrganizations(mockOrganizations);
+          }
         } else {
           // Fallback to mock data if API fails
           setOrganizations(mockOrganizations);
@@ -305,7 +310,8 @@ const UserDashboard = () => {
           {/* Content */}
           {activeTab === 'organizations' ? (
             <div className="space-y-6">
-              {organizations.map((org) => (
+              {organizations && Array.isArray(organizations) && organizations.length > 0 ? (
+                organizations.map((org) => (
                 <div
                   key={org.id}
                   onClick={() => handleOrganizationClick(org)}
@@ -364,7 +370,14 @@ const UserDashboard = () => {
                     </button>
                   </div>
                 </div>
-              ))}
+              ))
+              ) : (
+                <div className="text-center py-12">
+                  <div className="text-6xl mb-4">🔍</div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No organizations found</h3>
+                  <p className="text-gray-600">Check back later for available organizations.</p>
+                </div>
+              )}
             </div>
           ) : (
             <AboutContent />

@@ -65,7 +65,7 @@ export async function GET(request) {
             }
         }
 
-        // Format MongoDB organizations (Ensure lat/lng and photoUrl are included)
+        // Format MongoDB organizations 
         const mongoFormatted = mongoOrganizations.map(org => ({
             id: org._id.toString(), 
             name: org.name,
@@ -78,7 +78,9 @@ export async function GET(request) {
             isGooglePlace: false, 
             rating: 0, 
             userRatingsTotal: 0,
-            types: ['Registered Organization']
+            types: ['Registered Organization'],
+            email: org.email || null,
+            phone: org.phone || null
         }));
 
         // Combine all organizations

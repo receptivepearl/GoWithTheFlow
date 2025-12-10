@@ -24,30 +24,12 @@ const About = () => {
   const impactInView = useInView(impactRef, { once: true, margin: "-100px" });
   const ctaInView = useInView(ctaRef, { once: true, margin: "-100px" });
 
-  const [impactStats, setImpactStats] = useState({
-    totalOrganizations: 0,
-    totalProductsDonated: 0,
-    totalUsers: 0,
-    totalCities: 0
+  const [impactStats] = useState({
+    totalOrganizations: 7,
+    totalProductsDonated: 3000,
+    totalUsers: 15,
+    totalCities: 3
   });
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get('/api/stats/public');
-        if (response.data.success) {
-          setImpactStats(response.data.stats);
-        }
-      } catch (error) {
-        console.error('Error fetching stats:', error);
-      }
-    };
-
-    fetchStats();
-    // Refresh stats every 30 seconds
-    const interval = setInterval(fetchStats, 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <>

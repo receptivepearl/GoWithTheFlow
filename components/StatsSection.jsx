@@ -50,39 +50,12 @@ const AnimatedCounter = ({ end, duration = 2, suffix = '' }) => {
 const StatsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [stats, setStats] = useState([
-    { number: 0, suffix: '+', label: 'Organizations', icon: '🏢' },
-    { number: 0, suffix: '+', label: 'Products Donated', icon: '📦' },
-    { number: 0, suffix: '+', label: 'Active Donors', icon: '👥' },
-    { number: 0, suffix: '+', label: 'Cities', icon: '🌍' }
+  const [stats] = useState([
+    { number: 7, suffix: '', label: 'Organizations', icon: '🏢' },
+    { number: 3000, suffix: '+', label: 'Products Donated', icon: '📦' },
+    { number: 15, suffix: '', label: 'Active Donors', icon: '👥' },
+    { number: 3, suffix: '', label: 'Cities', icon: '🌍' }
   ]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get('/api/stats/public');
-        if (response.data.success) {
-          const data = response.data.stats;
-          setStats([
-            { number: data.totalOrganizations, suffix: '+', label: 'Organizations', icon: '🏢' },
-            { number: data.totalProductsDonated, suffix: '+', label: 'Products Donated', icon: '📦' },
-            { number: data.totalUsers, suffix: '+', label: 'Active Donors', icon: '👥' },
-            { number: data.totalCities, suffix: '+', label: 'Cities', icon: '🌍' }
-          ]);
-        }
-      } catch (error) {
-        console.error('Error fetching stats:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-    // Refresh stats every 30 seconds
-    const interval = setInterval(fetchStats, 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <section ref={ref} className="py-20 px-6 md:px-16 lg:px-32 bg-gradient-to-br from-gray-50 to-white">
