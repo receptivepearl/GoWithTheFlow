@@ -9,6 +9,9 @@ export async function GET(request) {
 
         await connectDB();
 
+        // Get donations for this donor
+        // Note: All donations include the 'image' field (may be null if no image was uploaded)
+        // The image field is the SINGLE SOURCE OF TRUTH for donation images
         const donations = await Donation.find({ donorId: userId }).sort({ date: -1 });
         
         return NextResponse.json({

@@ -6,6 +6,7 @@ import EnhancedNavbar from "@/components/EnhancedNavbar";
 import Footer from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import { useClerk } from "@clerk/nextjs";
+import { DONATION_TYPES, DONATION_TYPE_CONFIG } from "@/config/donationTypes";
 
 const ConnectContent = () => {
   const router = useRouter();
@@ -23,6 +24,7 @@ const ConnectContent = () => {
     website: '',
     taxId: ''
   });
+  const [acceptedDonationTypes, setAcceptedDonationTypes] = useState([]);
   const [adminInvitationCode, setAdminInvitationCode] = useState('');
   const [invitationError, setInvitationError] = useState('');
 
@@ -50,7 +52,17 @@ const ConnectContent = () => {
         alert('Please fill in organization name and address');
         return;
       }
-      localStorage.setItem('organizationData', JSON.stringify(organizationForm));
+      // Require at least one donation category to be selected
+      if (acceptedDonationTypes.length === 0) {
+        alert('Please select at least one donation category your organization accepts');
+        return;
+      }
+      // Store organization data including accepted donation types
+      const orgDataWithCategories = {
+        ...organizationForm,
+        acceptedDonationTypes: acceptedDonationTypes
+      };
+      localStorage.setItem('organizationData', JSON.stringify(orgDataWithCategories));
     }
     
     if (selectedRole === 'admin') {
@@ -88,6 +100,16 @@ const ConnectContent = () => {
       ...prev,
       [field]: value
     }));
+  };
+
+  const handleDonationTypeToggle = (donationType) => {
+    setAcceptedDonationTypes(prev => {
+      if (prev.includes(donationType)) {
+        return prev.filter(type => type !== donationType);
+      } else {
+        return [...prev, donationType];
+      }
+    });
   };
 
   return (
@@ -256,6 +278,51 @@ const ConnectContent = () => {
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                     placeholder="Describe your organization's mission and the communities you serve..."
                   />
+                </div>
+
+                {/* Donation Categories Selection */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    What types of donations does your organization accept? *
+                  </label>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Select all that apply. This helps donors find your organization when searching for specific donation types.
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {Object.values(DONATION_TYPES).map((type) => {
+                      const config = DONATION_TYPE_CONFIG[type];
+                      const isSelected = acceptedDonationTypes.includes(type);
+                      return (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => handleDonationTypeToggle(type)}
+                          className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
+                            isSelected
+                              ? 'border-pink-500 bg-pink-50 shadow-md'
+                              : 'border-gray-200 hover:border-pink-300 hover:bg-pink-50/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xl">{config.icon}</span>
+                            <span className={`font-medium text-sm ${isSelected ? 'text-pink-700' : 'text-gray-700'}`}>
+                              {config.label}
+                            </span>
+                            {isSelected && (
+                              <svg className="w-4 h-4 text-pink-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {acceptedDonationTypes.length === 0 && (
+                    <p className="mt-2 text-sm text-red-600">
+                      Please select at least one donation category
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

@@ -18,6 +18,7 @@ export async function POST(request) {
             contactPerson = '', // Default to empty string
             hours = '',         // Default to empty string
             productsNeeded = [],// <--- CRITICAL FIX: Default to empty array
+            acceptedDonationTypes = [], // Accepted donation categories
             lat = 0,            // <--- CRITICAL FIX: Default to 0
             lng = 0             // <--- CRITICAL FIX: Default to 0
         } = await request.json();
@@ -38,6 +39,7 @@ export async function POST(request) {
             contactPerson, 
             hours,
             productsNeeded,
+            acceptedDonationTypes,
             lat,
             lng 
         });
@@ -62,6 +64,7 @@ export async function POST(request) {
             contactPerson: contactPerson || '',
             hours: hours || '',
             productsNeeded: productsNeeded || [],
+            acceptedDonationTypes: acceptedDonationTypes || [], // Save accepted donation categories
             lat: lat || 0,
             lng: lng || 0,
             verified: true, // Organizations are auto-verified

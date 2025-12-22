@@ -20,6 +20,9 @@ export async function GET(request) {
             return NextResponse.json({ success: false, message: "Access Denied: Admin Only" }, { status: 403 });
         }
 
+        // Get all donations
+        // Note: All donations include the 'image' field (may be null if no image was uploaded)
+        // The image field is the SINGLE SOURCE OF TRUTH for donation images
         const donations = await Donation.find()
             .populate({
                 path: 'donorId',

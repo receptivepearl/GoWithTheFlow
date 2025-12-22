@@ -6,12 +6,14 @@ import Footer from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const AdminDonations = () => {
   const router = useRouter();
   const { user, userRole, getToken } = useAppContext();
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -91,7 +93,8 @@ const AdminDonations = () => {
             <div className="space-y-6">
               {donations.map((donation) => (
                 <div key={donation._id} className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-pink-100">
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex flex-col md:flex-row gap-6">
+                    {/* Left side - Donation Details */}
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-xl font-bold text-gray-900">
@@ -104,37 +107,64 @@ const AdminDonations = () => {
                       <p className="text-gray-600 mb-2">
                         📍 {donation.organizationId?.name || 'Unknown Organization'}
                       </p>
-                      <p className="text-gray-600 mb-2">
+                      <p className="text-gray-600 mb-4">
                         📧 {donation.donorId?.email || 'No email'}
                       </p>
-                    </div>
-                  </div>
 
-                  <div className="grid md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">Date</p>
-                      <p className="text-gray-900">{new Date(donation.date).toLocaleDateString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">Total Items</p>
-                      <p className="text-gray-900">{donation.totalItems}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">Organization</p>
-                      <p className="text-gray-900">{donation.organizationId?.name || 'Unknown'}</p>
-                    </div>
-                  </div>
+                      <div className="grid md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                          <p className="text-sm text-gray-500 mb-1">Date</p>
+                          <p className="text-gray-900">{new Date(donation.date).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500 mb-1">Total Items</p>
+                          <p className="text-gray-900">{donation.totalItems}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500 mb-1">Organization</p>
+                          <p className="text-gray-900">{donation.organizationId?.name || 'Unknown'}</p>
+                        </div>
+                      </div>
 
-                  <div className="border-t border-gray-200 pt-4">
-                    <h4 className="text-lg font-semibold text-gray-700 mb-2">Items Donated:</h4>
-                    <ul className="list-disc list-inside space-y-1">
-                      {donation.items.map((item, index) => (
-                        <li key={index} className="text-gray-600">
-                          {item.quantity} x {item.productName} 
-                          {item.description && ` (${item.description})`}
-                        </li>
-                      ))}
-                    </ul>
+                      <div className="border-t border-gray-200 pt-4">
+                        <h4 className="text-lg font-semibold text-gray-700 mb-2">Items Donated:</h4>
+                        <ul className="list-disc list-inside space-y-1">
+                          {donation.items.map((item, index) => (
+                            <li key={index} className="text-gray-600">
+                              {item.quantity} x {item.name || item.productName} 
+                              {item.description && ` (${item.description})`}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Right side - Donation Image */}
+                    {donation.image?.secure_url ? (
+                      <div className="md:w-80 flex-shrink-0">
+                        <h4 className="text-lg font-semibold text-gray-700 mb-3">Donation Photo:</h4>
+                        <div 
+                          className="relative w-full h-64 md:h-80 rounded-lg overflow-hidden border-2 border-pink-200 shadow-md cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => setSelectedImage(donation.image.secure_url)}
+                        >
+                          <Image
+                            src={donation.image.secure_url}
+                            alt="Donation photo"
+                            fill
+                            className="object-cover"
+                            unoptimized
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2 text-center">Click to view full size</p>
+                      </div>
+                    ) : (
+                      <div className="md:w-80 flex-shrink-0 flex items-center justify-center">
+                        <div className="text-center text-gray-400">
+                          <div className="text-4xl mb-2">📷</div>
+                          <p className="text-sm">No image uploaded</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -151,6 +181,33 @@ const AdminDonations = () => {
           </div>
         </div>
       </div>
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] w-full h-full">
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-4 right-4 bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center text-xl font-bold hover:bg-gray-200 z-10"
+            >
+              ×
+            </button>
+            <div className="relative w-full h-full">
+              <Image
+                src={selectedImage}
+                alt="Donation photo full size"
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </>
   );

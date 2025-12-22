@@ -3,6 +3,14 @@ import Donation from "@/models/Donation";
 import Organization from "@/models/Organization";
 import { getAuth } from "@clerk/nextjs/server";
 import connectDB from "@/config/db";
+import { v2 as cloudinary } from "cloudinary";
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 export async function PUT(request) {
     try {
@@ -44,6 +52,16 @@ export async function PUT(request) {
                 success: false,
                 message: 'Donation is already cancelled'
             });
+        }
+
+        // Delete Cloudinary image if exists
+        if (donation.image?.public_id) {
+            try {
+                await cloudinary.uploader.destroy(donation.image.public_id);
+            } catch (deleteError) {
+                console.error('Error deleting Cloudinary image:', deleteError);
+                // Continue with cancellation even if image deletion fails
+            }
         }
 
         // Update donation status to cancelled

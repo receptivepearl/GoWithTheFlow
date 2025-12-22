@@ -15,6 +15,8 @@ const PlaceOrderContent = () => {
   const [orderItems, setOrderItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   // Fetch organization data from API
   const fetchOrganization = async (orgId) => {
@@ -117,6 +119,41 @@ const PlaceOrderContent = () => {
     return orderItems.reduce((total, item) => total + item.quantity, 0);
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPEG, PNG, GIF, or WebP).');
+        e.target.value = '';
+        return;
+      }
+
+      // Validate file size (5MB max)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        alert('Image size must be less than 5MB.');
+        e.target.value = '';
+        return;
+      }
+
+      setSelectedImage(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+  };
+
   const handleSubmitOrder = async () => {
     if (orderItems.length === 0) {
       alert('Please add at least one item to your donation commitment.');
@@ -125,17 +162,22 @@ const PlaceOrderContent = () => {
 
     setSubmitting(true);
     try {
-      const donationData = {
-        organizationId: organization.id || organization._id,
-        organizationName: organization.name,
-        items: orderItems,
-        totalItems: getTotalItems(),
-        status: 'pending',
-        donorName: user.firstName + ' ' + user.lastName,
-        donorEmail: user.emailAddresses[0].emailAddress
-      };
+      // Create FormData instead of JSON
+      const formData = new FormData();
+      formData.append('organizationId', organization.id || organization._id);
+      formData.append('organizationName', organization.name);
+      formData.append('items', JSON.stringify(orderItems));
+      formData.append('totalItems', getTotalItems().toString());
+      formData.append('status', 'pending');
+      formData.append('donorName', user.firstName + ' ' + user.lastName);
+      formData.append('donorEmail', user.emailAddresses[0].emailAddress);
+      
+      // Add image if selected
+      if (selectedImage) {
+        formData.append('image', selectedImage);
+      }
 
-      const result = await createDonation(donationData);
+      const result = await createDonation(formData);
       if (result) {
         router.push('/donor/donations');
       }
@@ -277,6 +319,47 @@ const PlaceOrderContent = () => {
                   ))}
                   
                   <div className="border-t border-gray-200 pt-4 mt-6">
+                    {/* Image Upload Section */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Upload a photo of your donation (optional)
+                      </label>
+                      {!imagePreview ? (
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-pink-400 transition-colors">
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                            onChange={handleImageChange}
+                            className="hidden"
+                            id="donation-image-input"
+                          />
+                          <label
+                            htmlFor="donation-image-input"
+                            className="cursor-pointer flex flex-col items-center"
+                          >
+                            <div className="text-3xl mb-2">📷</div>
+                            <p className="text-sm text-gray-600">Click to upload image</p>
+                            <p className="text-xs text-gray-500 mt-1">JPEG, PNG, GIF, or WebP (max 5MB)</p>
+                          </label>
+                        </div>
+                      ) : (
+                        <div className="relative">
+                          <img
+                            src={imagePreview}
+                            alt="Donation preview"
+                            className="w-full h-48 object-cover rounded-lg border-2 border-pink-200"
+                          />
+                          <button
+                            onClick={removeImage}
+                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors"
+                            type="button"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
                     <div className="flex justify-between items-center mb-4">
                       <span className="text-lg font-semibold text-gray-900">Total Items:</span>
                       <span className="text-xl font-bold text-pink-600">{getTotalItems()}</span>

@@ -12,6 +12,8 @@ const organizationSchema = new mongoose.Schema({
     contactPerson: {type: String, default: ''},
     hours: {type: String, default: ''},
     productsNeeded: [String],
+    // Accepted donation types (optional - if not specified, organization accepts "other/general" donations)
+    acceptedDonationTypes: [String],
     lat: {type: Number, default: 0},
     lng: {type: Number, default: 0},
     verified: {type: Boolean, default: true}, // Organizations are auto-verified upon registration

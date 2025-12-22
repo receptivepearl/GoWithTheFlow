@@ -122,9 +122,19 @@ export const AppContextProvider = (props) => {
     const createDonation = async (donationData) => {
         try {
             const token = await getToken()
-            const { data } = await axios.post('/api/donations/create', donationData, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            
+            // Check if donationData is FormData (has image) or plain object
+            const isFormData = donationData instanceof FormData;
+            
+            const config = {
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    // Don't set Content-Type for FormData - browser will set it with boundary
+                    ...(isFormData ? {} : { 'Content-Type': 'application/json' })
+                }
+            }
+            
+            const { data } = await axios.post('/api/donations/create', donationData, config)
             if (data.success) {
                 toast.success('Donation commitment created successfully!')
                 fetchDonations() // Refresh donations list
@@ -132,7 +142,8 @@ export const AppContextProvider = (props) => {
             }
         } catch (error) {
             console.error('Error creating donation:', error)
-            toast.error('Error creating donation commitment')
+            const errorMessage = error.response?.data?.message || 'Error creating donation commitment'
+            toast.error(errorMessage)
             throw error
         }
     }

@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/config/db";
 import Organization from "@/models/Organization";
 import { locationService } from "@/lib/locationService";
+import { getGoogleMapsQuery, organizationAcceptsDonationType, getOrganizationTypesForDonationType } from "@/config/donationTypes";
 
 export async function GET(request) {
     try {
@@ -12,7 +13,8 @@ export async function GET(request) {
         const lng = parseFloat(searchParams.get('lng'));
         const query = searchParams.get('query') || '';
         // FIX: Ensure verifiedOnly is checked as boolean
-        const verifiedOnly = searchParams.get('verifiedOnly') === 'true'; 
+        const verifiedOnly = searchParams.get('verifiedOnly') === 'true';
+        const donationType = searchParams.get('donationType') || null;
         const radius = parseInt(searchParams.get('radius')) || 50000;
 
         if (!lat || !lng) {
@@ -41,10 +43,15 @@ export async function GET(request) {
         // 2. INTEGRATION: If not 'verifiedOnly', fetch Google Places
         if (!verifiedOnly) {
             try {
-                // Search for nearby places, using the user's query if provided
+                // Modify query based on donation type
+                const mapsQuery = donationType 
+                    ? getGoogleMapsQuery(donationType, query)
+                    : (query || 'women shelter, homeless shelter, community center, food bank, donation center');
+                
+                // Search for nearby places, using the modified query
                 const nearbyPlaces = await locationService.searchNearbyPlaces(
                     { lat, lng }, 
-                    query, 
+                    mapsQuery, 
                     radius
                 );
 
@@ -60,28 +67,104 @@ export async function GET(request) {
 
                 googlePlaces = await Promise.all(placePromises);
                 
+                // Filter Google Places by donation type (permissive matching)
+                if (donationType) {
+                    googlePlaces = googlePlaces.filter(place => 
+                        organizationAcceptsDonationType(place, donationType)
+                    );
+                    
+                    // FALLBACK: If filtering results in zero Google Places, be more permissive
+                    // This ensures we show relevant results even if exact matching fails
+                    if (googlePlaces.length === 0 && nearbyPlaces.length > 0) {
+                        const acceptedTypes = getOrganizationTypesForDonationType(donationType);
+                        
+                        // Fallback: show places that match any of the organization types
+                        googlePlaces = await Promise.all(
+                            nearbyPlaces.slice(0, 15).map(async (place) => {
+                                try {
+                                    const details = await locationService.getPlaceDetails(place.place_id);
+                                    return locationService.formatPlaceData(details);
+                                } catch (error) {
+                                    return locationService.formatPlaceData(place);
+                                }
+                            })
+                        );
+                        
+                        // Filter by type matching (more permissive)
+                        googlePlaces = googlePlaces.filter(place => {
+                            if (!place.types) return false;
+                            const orgTypes = place.types.map(t => t.toLowerCase());
+                            return acceptedTypes.some(type => 
+                                orgTypes.some(ot => ot.includes(type.toLowerCase()))
+                            );
+                        });
+                    }
+                }
+                
             } catch (error) {
                 console.error('Error fetching Google Places:', error);
             }
         }
 
-        // Format MongoDB organizations 
-        const mongoFormatted = mongoOrganizations.map(org => ({
-            id: org._id.toString(), 
-            name: org.name,
-            address: org.address,
-            lat: org.lat, // CRITICAL: Needed for distance calculation
-            lng: org.lng, // CRITICAL: Needed for distance calculation
-            description: org.description,
-            photoUrl: org.imageUrl, // Ensure property name matches page.jsx
-            verified: org.verified,
-            isGooglePlace: false, 
-            rating: 0, 
-            userRatingsTotal: 0,
-            types: ['Registered Organization'],
-            email: org.email || null,
-            phone: org.phone || null
-        }));
+        // Format MongoDB organizations and filter by donation type
+        let mongoFormatted = mongoOrganizations
+            .map(org => ({
+                id: org._id.toString(), 
+                name: org.name,
+                address: org.address,
+                lat: org.lat, // CRITICAL: Needed for distance calculation
+                lng: org.lng, // CRITICAL: Needed for distance calculation
+                description: org.description,
+                photoUrl: org.imageUrl, // Ensure property name matches page.jsx
+                verified: org.verified,
+                isGooglePlace: false, 
+                rating: 0, 
+                userRatingsTotal: 0,
+                types: ['Registered Organization'],
+                email: org.email || null,
+                phone: org.phone || null,
+                acceptedDonationTypes: org.acceptedDonationTypes || null
+            }));
+        
+        // Apply donation type filter
+        if (donationType) {
+            mongoFormatted = mongoFormatted.filter(org => 
+                organizationAcceptsDonationType(org, donationType)
+            );
+            
+            // FALLBACK: If filtering results in zero organizations, use category-based matching instead
+            // This is critical for early-stage platforms with sparse data
+            if (mongoFormatted.length === 0 && mongoOrganizations.length > 0) {
+                const acceptedTypes = getOrganizationTypesForDonationType(donationType);
+                
+                // Fallback to category-based matching
+                mongoFormatted = mongoOrganizations
+                    .map(org => ({
+                        id: org._id.toString(), 
+                        name: org.name,
+                        address: org.address,
+                        lat: org.lat,
+                        lng: org.lng,
+                        description: org.description,
+                        photoUrl: org.imageUrl,
+                        verified: org.verified,
+                        isGooglePlace: false, 
+                        rating: 0, 
+                        userRatingsTotal: 0,
+                        types: ['Registered Organization'],
+                        email: org.email || null,
+                        phone: org.phone || null,
+                        acceptedDonationTypes: org.acceptedDonationTypes || null
+                    }))
+                    .filter(org => {
+                        // Check if name or description contains any of the accepted type keywords
+                        const orgText = `${org.name || ''} ${org.description || ''}`.toLowerCase();
+                        return acceptedTypes.some(type => 
+                            orgText.includes(type.toLowerCase())
+                        );
+                    });
+            }
+        }
 
         // Combine all organizations
         allOrganizations = [...mongoFormatted, ...googlePlaces];

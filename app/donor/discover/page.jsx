@@ -9,6 +9,7 @@ import ContactPopup from "@/components/ContactPopup";
 import { useAppContext } from "@/context/AppContext";
 import { locationService } from "@/lib/locationService";
 import axios from "axios";
+import { DONATION_TYPES, DONATION_TYPE_CONFIG } from "@/config/donationTypes";
 
 
 const DiscoverPage = () => {
@@ -18,6 +19,7 @@ const DiscoverPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [selectedDonationType, setSelectedDonationType] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [locationError, setLocationError] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -76,7 +78,7 @@ const DiscoverPage = () => {
   }, [user, userRole]);
 
   // Load organizations based on location and filters
-  const loadOrganizations = async (location, query = '', verifiedOnlyFilter = false) => {
+  const loadOrganizations = async (location, query = '', verifiedOnlyFilter = false, donationType = null) => {
     if (!location) return;
 
     try {
@@ -88,6 +90,11 @@ const DiscoverPage = () => {
         verifiedOnly: verifiedOnlyFilter.toString(),
         radius: '50000' // 50km
       });
+      
+      // Add donation type if selected
+      if (donationType) {
+        params.append('donationType', donationType);
+      }
 
       const response = await fetch(`/api/organizations/nearby?${params}`);
       if (response.ok) {
@@ -113,13 +120,20 @@ const DiscoverPage = () => {
   // Handle search
   const handleSearch = async () => {
     if (!userLocation) return;
-    await loadOrganizations(userLocation, searchQuery, verifiedOnly);
+    await loadOrganizations(userLocation, searchQuery, verifiedOnly, selectedDonationType);
   };
 
   // Handle verified filter change
   const handleVerifiedFilterChange = async (verified) => {
     setVerifiedOnly(verified);
-    await loadOrganizations(userLocation, searchQuery, verified);
+    await loadOrganizations(userLocation, searchQuery, verified, selectedDonationType);
+  };
+
+  // Handle donation type change
+  const handleDonationTypeChange = async (donationType) => {
+    const newType = selectedDonationType === donationType ? null : donationType; // Toggle off if same type clicked
+    setSelectedDonationType(newType);
+    await loadOrganizations(userLocation, searchQuery, verifiedOnly, newType);
   };
 
   const handleOrganizationClick = async (organization) => {
@@ -235,8 +249,48 @@ const DiscoverPage = () => {
                 </button>
               </div>
 
+              {/* Donation Type Selector */}
+              <div className="border-t border-gray-200 pt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  What would you like to donate?
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  {Object.values(DONATION_TYPES).map((type) => {
+                    const config = DONATION_TYPE_CONFIG[type];
+                    const isSelected = selectedDonationType === type;
+                    return (
+                      <button
+                        key={type}
+                        onClick={() => handleDonationTypeChange(type)}
+                        className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                          isSelected
+                            ? 'bg-pink-600 text-white shadow-md transform scale-105'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm'
+                        }`}
+                      >
+                        <span className="text-lg">{config.icon}</span>
+                        <span>{config.label}</span>
+                        {isSelected && (
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                {selectedDonationType && (
+                  <button
+                    onClick={() => handleDonationTypeChange(selectedDonationType)}
+                    className="mt-3 text-sm text-pink-600 hover:text-pink-700 font-medium"
+                  >
+                    Clear selection
+                  </button>
+                )}
+              </div>
+
               {/* Filters */}
-              <div className="flex flex-wrap gap-4 items-center">
+              <div className="flex flex-wrap gap-4 items-center border-t border-gray-200 pt-4">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
