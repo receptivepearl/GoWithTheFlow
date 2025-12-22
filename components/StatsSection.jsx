@@ -58,7 +58,7 @@ const StatsSection = () => {
   ]);
 
   return (
-    <section ref={ref} className="py-20 px-6 md:px-16 lg:px-32 bg-gradient-to-br from-gray-50 to-white">
+    <section id="stats" ref={ref} className="py-20 px-6 md:px-16 lg:px-32">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -66,7 +66,7 @@ const StatsSection = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-6">
             Our Impact in Numbers
           </h2>
           <motion.div
@@ -92,7 +92,7 @@ const StatsSection = () => {
               className="group"
             >
               {/* Glass Morphism Card */}
-              <div className="relative p-6 bg-white/20 backdrop-blur-lg rounded-2xl border border-white/30 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+              <div className="relative p-6 bg-white/30 backdrop-blur-lg rounded-2xl border border-white/40 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                 {/* Animated Background */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -134,7 +134,7 @@ const StatsSection = () => {
 
                   {/* Label */}
                   <motion.p
-                    className="text-gray-600 font-medium"
+                    className="text-gray-700 font-medium"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
                   >

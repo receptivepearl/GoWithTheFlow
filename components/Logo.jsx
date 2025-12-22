@@ -11,22 +11,30 @@ const Logo = ({ size = 'default', className = '' }) => {
   return (
     <div className={`flex items-center ${className}`}>
       <div className={`${sizeClasses[size]} relative`}>
-        {/* Main logo circle with gradient */}
-        <div className="w-full h-full rounded-full bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 flex items-center justify-center shadow-lg">
-          {/* Inner wave pattern */}
+        {/* Simple grid icon matching GirlsWhoGive gradient (pink to purple) */}
+        <div className="w-full h-full rounded-lg flex items-center justify-center p-1">
           <svg 
             viewBox="0 0 24 24" 
-            className="w-3/4 h-3/4 text-white"
-            fill="currentColor"
+            className="w-full h-full"
+            fill="none"
           >
-            <path d="M3 12c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/>
-            <path d="M3 8c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/>
-            <path d="M3 16c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm4 0c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/>
+            <defs>
+              <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#ec4899" />
+                <stop offset="100%" stopColor="#9333ea" />
+              </linearGradient>
+            </defs>
+            {/* Simple 2x2 grid with pink-to-purple gradient */}
+            <rect x="2" y="2" width="9" height="9" fill="url(#logoGradient)" rx="1" />
+            <rect x="13" y="2" width="9" height="9" fill="url(#logoGradient)" rx="1" />
+            <rect x="2" y="13" width="9" height="9" fill="url(#logoGradient)" rx="1" />
+            <rect x="13" y="13" width="9" height="9" fill="url(#logoGradient)" rx="1" />
+            
+            {/* Subtle grid lines */}
+            <line x1="12" y1="2" x2="12" y2="22" stroke="#9333ea" strokeWidth="0.5" strokeOpacity="0.3" />
+            <line x1="2" y1="12" x2="22" y2="12" stroke="#9333ea" strokeWidth="0.5" strokeOpacity="0.3" />
           </svg>
         </div>
-        
-        {/* Subtle glow effect */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 opacity-20 blur-sm -z-10"></div>
       </div>
     </div>
   );

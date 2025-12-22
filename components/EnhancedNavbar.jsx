@@ -27,6 +27,7 @@ const EnhancedNavbar = () => {
       return [
         { href: "/", label: "Home" },
         { href: "/about", label: "About" },
+        { href: "#stats", label: "Impact" },
         { href: "/connect", label: "Connect" }
       ];
     }
@@ -37,13 +38,15 @@ const EnhancedNavbar = () => {
           { href: "/", label: "Home" },
           { href: "/donor/discover", label: "Discover" },
           { href: "/donor/donations", label: "My Donations" },
-          { href: "/about", label: "About" }
+          { href: "/about", label: "About" },
+          { href: "#stats", label: "Impact" }
         ];
       case 'organization':
         return [
           { href: "/", label: "Home" },
           { href: "/organization-dashboard", label: "Dashboard" },
-          { href: "/about", label: "About" }
+          { href: "/about", label: "About" },
+          { href: "#stats", label: "Impact" }
         ];
       case 'admin':
         return [
@@ -51,12 +54,14 @@ const EnhancedNavbar = () => {
           { href: "/admin/dashboard", label: "Admin Dashboard" },
           { href: "/admin/organizations", label: "Organizations" },
           { href: "/admin/donations", label: "All Donations" },
-          { href: "/about", label: "About" }
+          { href: "/about", label: "About" },
+          { href: "#stats", label: "Impact" }
         ];
       default:
         return [
           { href: "/", label: "Home" },
           { href: "/about", label: "About" },
+          { href: "#stats", label: "Impact" },
           { href: "/connect", label: "Connect" }
         ];
     }
@@ -71,8 +76,8 @@ const EnhancedNavbar = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/80 backdrop-blur-lg shadow-lg border-b border-pink-100' 
-          : 'bg-transparent'
+          ? 'bg-white/40 backdrop-blur-md shadow-lg border-b border-white/20' 
+          : 'bg-white/20 backdrop-blur-sm'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,8 +89,10 @@ const EnhancedNavbar = () => {
           >
             <Link href="/" className="flex items-center space-x-3">
               <Logo size="default" />
-              <span className="text-2xl font-bold text-gray-900">
-                <span className="text-pink-600">Girls</span>Who<span className="text-pink-600">Give</span>
+              <span className="text-2xl font-bold">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">Girls</span>
+                <span className="text-gray-900">Who</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">Give</span>
               </span>
             </Link>
           </motion.div>
@@ -101,7 +108,16 @@ const EnhancedNavbar = () => {
               >
                 <Link
                   href={item.href}
-                  className="relative text-gray-700 hover:text-pink-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 group"
+                  onClick={(e) => {
+                    if (item.href.startsWith('#')) {
+                      e.preventDefault();
+                      const element = document.querySelector(item.href);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }
+                  }}
+                  className="relative text-gray-900 hover:text-pink-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 group"
                 >
                   {item.label}
                   <motion.div
@@ -205,8 +221,17 @@ const EnhancedNavbar = () => {
                   >
                     <Link
                       href={item.href}
-                      className="text-gray-700 hover:text-pink-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={(e) => {
+                        if (item.href.startsWith('#')) {
+                          e.preventDefault();
+                          const element = document.querySelector(item.href);
+                          if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                          }
+                        }
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="text-gray-900 hover:text-pink-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
                     >
                       {item.label}
                     </Link>

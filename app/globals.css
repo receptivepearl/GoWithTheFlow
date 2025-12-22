@@ -17,3 +17,49 @@
 ::-webkit-scrollbar {
   display: none;
 }
+
+/* Reflective Glass UI System */
+@layer utilities {
+  .reflective-glass {
+    /* Base glass layer */
+    background: rgba(255, 255, 255, 0.45);
+    
+    /* Reflection gradient overlay (TOP-LEFT → CENTER) */
+    background-image: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.65) 0%,
+      rgba(255, 255, 255, 0.25) 35%,
+      rgba(255, 255, 255, 0.08) 55%,
+      rgba(255, 255, 255, 0) 70%
+    );
+    
+    /* Backdrop blur with saturation */
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    
+    /* Border */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    
+    /* Large rounded corners */
+    border-radius: 28px;
+    
+    /* Soft outer shadow */
+    box-shadow: 
+      0 30px 60px rgba(0, 0, 0, 0.18),
+      inset 0 1px 1px rgba(255, 255, 255, 0.6);
+    
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reflective-glass-hover {
+    transition: all 250ms ease-out;
+  }
+
+  .reflective-glass-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+      0 35px 70px rgba(0, 0, 0, 0.22),
+      inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  }
+}

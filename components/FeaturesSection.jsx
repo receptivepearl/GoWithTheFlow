@@ -52,7 +52,7 @@ const FeaturesSection = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-6">
             How We Make a Difference
           </h2>
           <motion.div
@@ -71,68 +71,27 @@ const FeaturesSection = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
               transition={{ duration: 0.8, delay: index * 0.2 }}
-              whileHover={{ 
-                scale: 1.05, 
-                y: -10,
-                transition: { duration: 0.3 }
-              }}
               className="group"
             >
-              {/* Glass Morphism Card */}
-              <div className="relative p-6 sm:p-8 bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
-                {/* Animated Background Gradient */}
-                <motion.div
-                  className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-                  animate={{
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  style={{
-                    backgroundSize: '200% 200%'
-                  }}
-                />
-
-                {/* Decorative Elements */}
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full blur-sm opacity-60" />
-                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-gradient-to-r from-purple-400 to-indigo-500 rounded-full blur-sm opacity-60" />
-
+              {/* Reflective Glass Card */}
+              <div className="reflective-glass reflective-glass-hover relative p-8 sm:p-10">
                 {/* Content */}
                 <div className="relative z-10 text-center">
-                  {/* Icon Container */}
-                  <motion.div
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.6 }}
-                    className={`w-20 h-20 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}
-                  >
+                  {/* Icon Container - Gradient square */}
+                  <div className={`w-20 h-20 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg`}>
                     <div className="text-white">
                       {feature.icon}
                     </div>
-                  </motion.div>
+                  </div>
 
                   {/* Text Content */}
-                  <motion.h3
-                    className="text-2xl font-bold text-gray-900 mb-4"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.2 }}
-                  >
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">
                     {feature.title}
-                  </motion.h3>
+                  </h3>
                   
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-gray-700 leading-relaxed text-base">
                     {feature.description}
                   </p>
-
-                  {/* Hover Effect Line */}
-                  <motion.div
-                    className={`h-1 bg-gradient-to-r ${feature.gradient} rounded-full mt-6`}
-                    initial={{ width: 0 }}
-                    whileHover={{ width: '100%' }}
-                    transition={{ duration: 0.3 }}
-                  />
                 </div>
               </div>
             </motion.div>
