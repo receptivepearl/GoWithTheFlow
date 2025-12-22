@@ -50,12 +50,32 @@ const AnimatedCounter = ({ end, duration = 2, suffix = '' }) => {
 const StatsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [stats] = useState([
-    { number: 7, suffix: '', label: 'Organizations', icon: '🏢' },
-    { number: 3000, suffix: '+', label: 'Products Donated', icon: '📦' },
-    { number: 15, suffix: '', label: 'Active Donors', icon: '👥' },
-    { number: 3, suffix: '', label: 'Cities', icon: '🌍' }
+  const [stats, setStats] = useState([
+    { number: 0, suffix: '', label: 'Organizations', icon: '🏢' },
+    { number: 0, suffix: '+', label: 'Products Donated', icon: '📦' }
   ]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get('/api/stats/public');
+        if (response.data.success) {
+          const data = response.data.stats;
+          setStats([
+            { number: data.totalOrganizations, suffix: '', label: 'Organizations', icon: '🏢' },
+            { number: data.totalProductsDonated, suffix: '+', label: 'Products Donated', icon: '📦' }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   return (
     <section id="stats" ref={ref} className="py-20 px-6 md:px-16 lg:px-32">
@@ -77,7 +97,7 @@ const StatsSection = () => {
           />
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}

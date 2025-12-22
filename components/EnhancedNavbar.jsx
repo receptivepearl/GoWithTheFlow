@@ -27,7 +27,8 @@ const EnhancedNavbar = () => {
       return [
         { href: "/", label: "Home" },
         { href: "/about", label: "About" },
-        { href: "#stats", label: "Impact" },
+        { href: "/discover", label: "Discover" },
+        { href: "/organization-needs", label: "Organization Needs" },
         { href: "/connect", label: "Connect" }
       ];
     }
@@ -38,15 +39,14 @@ const EnhancedNavbar = () => {
           { href: "/", label: "Home" },
           { href: "/donor/discover", label: "Discover" },
           { href: "/donor/donations", label: "My Donations" },
-          { href: "/about", label: "About" },
-          { href: "#stats", label: "Impact" }
+          { href: "/donor/organization-needs", label: "Organization Needs" },
+          { href: "/about", label: "About" }
         ];
       case 'organization':
         return [
           { href: "/", label: "Home" },
           { href: "/organization-dashboard", label: "Dashboard" },
-          { href: "/about", label: "About" },
-          { href: "#stats", label: "Impact" }
+          { href: "/about", label: "About" }
         ];
       case 'admin':
         return [
@@ -54,14 +54,15 @@ const EnhancedNavbar = () => {
           { href: "/admin/dashboard", label: "Admin Dashboard" },
           { href: "/admin/organizations", label: "Organizations" },
           { href: "/admin/donations", label: "All Donations" },
-          { href: "/about", label: "About" },
-          { href: "#stats", label: "Impact" }
+          { href: "/admin/organization-needs", label: "Organization Needs" },
+          { href: "/about", label: "About" }
         ];
       default:
         return [
           { href: "/", label: "Home" },
           { href: "/about", label: "About" },
-          { href: "#stats", label: "Impact" },
+          { href: "/discover", label: "Discover" },
+          { href: "/organization-needs", label: "Organization Needs" },
           { href: "/connect", label: "Connect" }
         ];
     }
@@ -108,15 +109,6 @@ const EnhancedNavbar = () => {
               >
                 <Link
                   href={item.href}
-                  onClick={(e) => {
-                    if (item.href.startsWith('#')) {
-                      e.preventDefault();
-                      const element = document.querySelector(item.href);
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }
-                  }}
                   className="relative text-gray-900 hover:text-pink-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 group"
                 >
                   {item.label}
@@ -221,16 +213,7 @@ const EnhancedNavbar = () => {
                   >
                     <Link
                       href={item.href}
-                      onClick={(e) => {
-                        if (item.href.startsWith('#')) {
-                          e.preventDefault();
-                          const element = document.querySelector(item.href);
-                          if (element) {
-                            element.scrollIntoView({ behavior: 'smooth' });
-                          }
-                        }
-                        setIsMobileMenuOpen(false);
-                      }}
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="text-gray-900 hover:text-pink-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
                     >
                       {item.label}

@@ -5,7 +5,6 @@ import EnhancedNavbar from "@/components/EnhancedNavbar";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
-import StatsSection from "@/components/StatsSection";
 import { useAppContext } from "@/context/AppContext";
 
 const Home = () => {
@@ -51,9 +50,6 @@ const Home = () => {
         
         {/* Features Section */}
         <FeaturesSection />
-        
-        {/* Stats Section */}
-        <StatsSection />
       </div>
       <Footer />
     </>

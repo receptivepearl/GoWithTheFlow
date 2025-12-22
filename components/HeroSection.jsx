@@ -119,14 +119,10 @@ const HeroSection = ({ onRoleSelection, user, userRole }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-lg sm:text-xl md:text-2xl text-gray-700 leading-relaxed"
+                className="text-sm sm:text-sm md:text-base text-black leading-relaxed"
               >
-                Connecting compassionate donors with organizations to provide menstrual products 
-                to those in need, creating a world where{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 font-semibold">
-                  period poverty
-                </span>{' '}
-                is history.
+                Simplified donation tracking for nonprofits and community organizations.
+                Our platform makes it easy for donors to let organizations know exactly what they're bringing—whether it's food, clothing, books, or other in-kind items—before they arrive. Organizations can track commitments, record in-person donations in seconds, and view clear monthly totals without spreadsheets or manual guesswork. Everything stays organized in one place, so nonprofits spend less time managing donations and more time making an impact.
               </motion.p>
 
               {/* CTA Buttons */}

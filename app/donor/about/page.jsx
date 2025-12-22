@@ -23,7 +23,17 @@ const DonorAboutPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
+      <div 
+        className="relative min-h-screen"
+        style={{
+          backgroundImage: 'url(/background/BackgroundUI.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          minHeight: '100vh'
+        }}
+      >
         <div className="px-6 md:px-16 lg:px-32 py-20">
           <div className="max-w-4xl mx-auto">
             

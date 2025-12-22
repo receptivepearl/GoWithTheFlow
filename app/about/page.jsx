@@ -6,6 +6,7 @@ import { useRef } from "react";
 import axios from "axios";
 import EnhancedNavbar from "@/components/EnhancedNavbar";
 import Footer from "@/components/Footer";
+import StatsSection from "@/components/StatsSection";
 
 const About = () => {
   const bioRef = useRef(null);
@@ -13,7 +14,6 @@ const About = () => {
   const missionRef = useRef(null);
   const howItWorksRef = useRef(null);
   const verifiedRef = useRef(null);
-  const impactRef = useRef(null);
   const ctaRef = useRef(null);
 
   const bioInView = useInView(bioRef, { once: true, margin: "-100px" });
@@ -21,20 +21,23 @@ const About = () => {
   const missionInView = useInView(missionRef, { once: true, margin: "-100px" });
   const howItWorksInView = useInView(howItWorksRef, { once: true, margin: "-100px" });
   const verifiedInView = useInView(verifiedRef, { once: true, margin: "-100px" });
-  const impactInView = useInView(impactRef, { once: true, margin: "-100px" });
   const ctaInView = useInView(ctaRef, { once: true, margin: "-100px" });
 
-  const [impactStats] = useState({
-    totalOrganizations: 7,
-    totalProductsDonated: 3000,
-    totalUsers: 15,
-    totalCities: 3
-  });
 
   return (
     <>
       <EnhancedNavbar />
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-16">
+      <div 
+        className="relative min-h-screen pt-16"
+        style={{
+          backgroundImage: 'url(/background/BackgroundUI.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          minHeight: '100vh'
+        }}
+      >
         {/* Floating Gradient Orbs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -67,6 +70,65 @@ const About = () => {
 
         <div className="relative z-10 px-6 md:px-16 lg:px-32 py-20">
           <div className="max-w-4xl mx-auto">
+            {/* Hero Section */}
+            <motion.div
+              ref={heroRef}
+              initial={{ opacity: 0, y: 30 }}
+              animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.8 }}
+              className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 mb-12 shadow-lg border border-pink-100 relative overflow-hidden text-center"
+            >
+              {/* Decorative gradient background */}
+              <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-pink-500 to-purple-600" />
+              <div className="relative z-10">
+              <motion.h1
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={heroInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6"
+              >
+                About <motion.span
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600"
+                  animate={{
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  style={{
+                    backgroundSize: '200% 200%'
+                  }}
+                >
+                  GirlsWhoGive
+                </motion.span>
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="text-lg sm:text-xl md:text-2xl text-gray-600 leading-relaxed"
+              >
+                <span className="font-semibold text-pink-600">GirlsWhoGive</span> is a donation-tracking platform that connects compassionate donors with nonprofits and community organizations in need of essential items.
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="text-lg sm:text-xl md:text-2xl text-gray-600 leading-relaxed mt-4"
+              >
+                Our goal is simple: make in-kind giving <span className="font-semibold text-pink-600">organized, intentional, and transparent</span>—for both donors and organizations.
+              </motion.p>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={heroInView ? { width: '100px' } : { width: 0 }}
+                transition={{ duration: 1, delay: 0.6 }}
+                className="h-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mx-auto mt-6"
+              />
+              </div>
+            </motion.div>
+
             {/* Bio Section */}
             <motion.div
               ref={bioRef}
@@ -121,63 +183,26 @@ const About = () => {
                   <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                     About the <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600">Founder</span>
                   </h2>
-                  <p className="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed">
-                    I'm <span className="font-semibold text-pink-600">Sudharshini Ram</span>, and I believe that dignity is a basic human right. My journey as a passionate advocate for girls and women opened my eyes to a widespread and hidden crisis: period poverty. This mission became deeply personal when I saw how this one issue could be a major barrier to a person's education, work, and sense of self-worth.
+                  <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                    Hi! I'm <span className="font-semibold text-pink-600">Sudharshini Ram</span>, founder of <span className="font-semibold text-pink-600">GirlsWhoGive</span>, and I believe that access to essential resources is a matter of dignity—not luck.
                   </p>
-                  <p className="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed mt-4">
-                    I started by mobilizing my own community, organizing drives that successfully collected and donated over <span className="font-bold text-purple-600">1,200 feminine hygiene products</span> to women's shelters. That experience taught me two things: people are incredibly generous, but the logistics of getting donations to the right places, at the right time, is a huge challenge. I created this app to solve that exact problem. It's a bridge, connecting the generosity in our communities directly to the shelters that need it most. Together, we can end period poverty and restore dignity to countless women in need.
+                  <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed mt-4">
+                    My journey began through community initiatives, where I organized donation drives that collected <span className="font-bold text-purple-600">thousands of in-kind items</span>, including hygiene products, food, clothing, and school supplies, for local nonprofits and shelters. Through this work, I saw firsthand how generous communities can be—yet I also noticed a major gap.
+                  </p>
+                  <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed mt-4">
+                    Nonprofits often didn't know <span className="font-semibold text-pink-600">what donations were coming, how much to expect, or how to track items once they arrived</span>. Donors wanted to help, organizations needed support—but coordination was inefficient and time-consuming.
+                  </p>
+                  <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed mt-4">
+                    I created <span className="font-semibold text-pink-600">GirlsWhoGive</span> to solve this problem. The platform acts as a bridge between donors and organizations, making in-kind donations easier to plan, track, and manage. By simplifying the logistics, nonprofits can spend less time counting boxes and more time making an impact.
                   </p>
                 </motion.div>
               </div>
             </motion.div>
 
-            {/* Hero Section */}
-            <motion.div
-              ref={heroRef}
-              initial={{ opacity: 0, y: 30 }}
-              animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16"
-            >
-              <motion.h1
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={heroInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6"
-              >
-                About <motion.span
-                  className="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600"
-                  animate={{
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  style={{
-                    backgroundSize: '200% 200%'
-                  }}
-                >
-                  GirlsWhoGive
-                </motion.span>
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={heroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-lg sm:text-xl md:text-2xl text-gray-600 leading-relaxed"
-              >
-                We're on a mission to end period poverty by connecting compassionate donors 
-                with organizations that serve women in need.
-              </motion.p>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={heroInView ? { width: '100px' } : { width: 0 }}
-                transition={{ duration: 1, delay: 0.6 }}
-                className="h-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mx-auto mt-6"
-              />
-            </motion.div>
+            {/* Impact in Numbers Section */}
+            <div className="mb-16">
+              <StatsSection />
+            </div>
 
             {/* Mission Section */}
             <motion.div
@@ -190,14 +215,10 @@ const About = () => {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 to-purple-600" />
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
               <p className="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed mb-6">
-                We believe that access to menstrual products is a <span className="font-semibold text-pink-600">fundamental right, not a privilege</span>. 
-                Period poverty affects millions of women and girls worldwide, forcing them to choose 
-                between basic necessities and essential hygiene products.
+                We believe that access to basic necessities—such as food, clothing, hygiene products, books, and school supplies—should never be a barrier to dignity, health, or opportunity.
               </p>
               <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-                GirlsWhoGive bridges the gap between generous donors and organizations serving 
-                women's shelters, community health centers, and nonprofits. Together, we're creating 
-                a world where no woman has to face period poverty alone.
+                GirlsWhoGive connects donors with nonprofits, shelters, schools, and community organizations by streamlining how in-kind donations are communicated and tracked. Together, we're building a system where generosity is easier to give—and easier to manage.
               </p>
             </motion.div>
 
@@ -214,9 +235,9 @@ const About = () => {
               
               <div className="grid md:grid-cols-3 gap-8">
                 {[
-                  { icon: '★', title: 'Find Organizations', desc: 'Discover verified nonprofits and women\'s shelters in your area that accept menstrual product donations.', gradient: 'from-pink-500 to-rose-500' },
-                  { icon: '♥', title: 'Make Donations', desc: 'Place orders for menstrual products that go directly to organizations serving women in need in your community.', gradient: 'from-purple-500 to-violet-500' },
-                  { icon: '✔', title: 'Track Impact', desc: 'See how your donations make a real difference in your community and help end period poverty.', gradient: 'from-indigo-500 to-blue-500' }
+                  { icon: '★', title: 'Find Organizations', desc: 'Discover nonprofits and community organizations in your area and see exactly what types of donations they accept.', gradient: 'from-pink-500 to-rose-500' },
+                  { icon: '♥', title: 'Commit to Donate', desc: 'Let organizations know what items you plan to bring and how many, before arriving in person.', gradient: 'from-purple-500 to-violet-500' },
+                  { icon: '✔', title: 'Track Impact', desc: 'Organizations log donations in seconds and view clear monthly totals—no spreadsheets or manual guesswork.', gradient: 'from-indigo-500 to-blue-500' }
                 ].map((item, index) => (
                   <motion.div
                     key={item.title}
@@ -251,77 +272,38 @@ const About = () => {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 to-purple-600" />
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Verified Organizations</h2>
               <p className="text-base sm:text-lg text-gray-700 leading-relaxed mb-6">
-                Organizations with a ✓ checkmark are verified partners who have completed our 
-                rigorous registration process. This ensures that:
+                Organizations with a ✓ checkmark are verified partners who have completed our registration process. This ensures that:
               </p>
               
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
                 {[
-                  ['They are legitimate nonprofit organizations', 'They serve underserved communities', 'They have proper documentation and tax status'],
-                  ['They can receive direct product donations', 'They maintain proper donation records', 'They provide regular impact updates']
-                ].map((column, colIndex) => (
-                  <div key={colIndex} className="space-y-4">
-                    {column.map((item, index) => (
-                      <motion.div
-                        key={item}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={verifiedInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-                        transition={{ duration: 0.5, delay: colIndex * 0.3 + index * 0.1 }}
-                        className="flex items-start gap-3"
-                      >
-                        <motion.span
-                          className="text-green-600 text-xl"
-                          initial={{ scale: 0 }}
-                          animate={verifiedInView ? { scale: 1 } : { scale: 0 }}
-                          transition={{ duration: 0.3, delay: colIndex * 0.3 + index * 0.1 + 0.2 }}
-                        >
-                          ✓
-                        </motion.span>
-                        <p className="text-gray-700">{item}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Impact Statistics - This will use the same StatsSection component from home */}
-            <motion.div
-              ref={impactRef}
-              initial={{ opacity: 0, y: 50 }}
-              animate={impactInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-              transition={{ duration: 0.8 }}
-              className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 md:p-12 mb-12 shadow-lg border border-pink-100 relative overflow-hidden"
-            >
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 to-purple-600" />
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-8">Our Impact</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                {[
-                  { value: impactStats.totalOrganizations, label: 'Organizations', color: 'text-pink-600' },
-                  { value: impactStats.totalProductsDonated, label: 'Products Donated', color: 'text-purple-600' },
-                  { value: impactStats.totalUsers, label: 'Active Donors', color: 'text-pink-600' },
-                  { value: impactStats.totalCities, label: 'Cities', color: 'text-purple-600' }
-                ].map((stat, index) => (
+                  'They are legitimate nonprofit or community organizations',
+                  'They accept in-kind donations',
+                  'They maintain accurate donation records',
+                  'They can responsibly receive and distribute donated items',
+                  'They provide transparency around community impact'
+                ].map((item, index) => (
                   <motion.div
-                    key={stat.label}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={impactInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                    key={item}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={verifiedInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="text-center"
+                    className="flex items-start gap-3"
                   >
-                    <motion.div
-                      className={`text-4xl md:text-5xl font-bold ${stat.color} mb-2`}
-                      initial={{ opacity: 0 }}
-                      animate={impactInView ? { opacity: 1 } : { opacity: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
+                    <motion.span
+                      className="text-green-600 text-xl"
+                      initial={{ scale: 0 }}
+                      animate={verifiedInView ? { scale: 1 } : { scale: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 + 0.2 }}
                     >
-                      {stat.value.toLocaleString()}+
-                    </motion.div>
-                    <div className="text-gray-600">{stat.label}</div>
+                      ✓
+                    </motion.span>
+                    <p className="text-gray-700">{item}</p>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
+
 
             {/* Call to Action */}
             <motion.div
@@ -346,7 +328,7 @@ const About = () => {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="text-lg sm:text-xl mb-8 opacity-90 relative z-10"
               >
-                Join our community of compassionate donors and help end period poverty in your area.
+                Join a growing community of donors and organizations working together to make in-kind giving more effective.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

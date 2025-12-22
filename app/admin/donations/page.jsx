@@ -62,7 +62,17 @@ const AdminDonations = () => {
     return (
       <>
         <EnhancedNavbar />
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-16">
+        <div 
+          className="relative min-h-screen flex items-center justify-center pt-16"
+          style={{
+            backgroundImage: 'url(/background/BackgroundUI.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            minHeight: '100vh'
+          }}
+        >
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-pink-600 mx-auto mb-4"></div>
             <p className="text-xl text-gray-600">Loading donations...</p>
@@ -76,7 +86,17 @@ const AdminDonations = () => {
   return (
     <>
       <EnhancedNavbar />
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8 pt-16">
+      <div 
+        className="relative min-h-screen py-12 px-4 sm:px-6 lg:px-8 pt-16"
+        style={{
+          backgroundImage: 'url(/background/BackgroundUI.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          minHeight: '100vh'
+        }}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">All Donations</h1>

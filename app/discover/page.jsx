@@ -1,5 +1,3 @@
-// src/app/discover/page.jsx
-
 'use client'
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -27,55 +25,39 @@ const DiscoverPage = () => {
   const [isContactPopupOpen, setIsContactPopupOpen] = useState(false);
   const [loadingOrgDetails, setLoadingOrgDetails] = useState(false);
 
-  // Redirect if not authenticated or not a donor
-  useEffect(() => {
-    if (!user) {
-      router.push('/connect?role=donor');
-      return;
-    }
-    if (userRole && userRole !== 'donor') {
-      router.push('/');
-      return;
-    }
-  }, [user, userRole, router]);
-
-  // Get user's current location
+  // Get user's current location (works for both logged in and not logged in)
   useEffect(() => {
     const getUserLocation = async () => {
-      if (user && userRole === 'donor') {
-        try {
-          setLoading(true);
-          const location = await locationService.getCurrentLocation();
-          setUserLocation(location);
-          await loadOrganizations(location);
-        } catch (error) {
-          console.error('Error getting location:', error);
-          // FIX: Use a more specific error message based on Geolocation error codes
-          let errorMessage = 'Unable to get your location. Please ensure location services are enabled on your device/OS.';
-          if (error && error.code === 3) {
-            errorMessage = 'Location request timed out. Please check your signal and try refreshing.';
-          } else if (error && error.code === 2) {
-            errorMessage = 'Location is unavailable. Please check system location services.';
-          } else if (error && error.code === 1) {
-            errorMessage = 'Location permission denied. Please grant location access in your browser settings.';
-          }
-
-          setLocationError(errorMessage);
-          
-          // Use default location (San Francisco) as fallback
-          const fallbackLocation = { lat: 37.7749, lng: -122.4194 };
-          setUserLocation(fallbackLocation);
-          // Append fallback note to the error message
-          setLocationError(prev => prev + ' Displaying organizations for San Francisco as a fallback.');
-          await loadOrganizations(fallbackLocation);
-        } finally {
-          setLoading(false);
+      try {
+        setLoading(true);
+        const location = await locationService.getCurrentLocation();
+        setUserLocation(location);
+        await loadOrganizations(location);
+      } catch (error) {
+        console.error('Error getting location:', error);
+        let errorMessage = 'Unable to get your location. Please ensure location services are enabled on your device/OS.';
+        if (error && error.code === 3) {
+          errorMessage = 'Location request timed out. Please check your signal and try refreshing.';
+        } else if (error && error.code === 2) {
+          errorMessage = 'Location is unavailable. Please check system location services.';
+        } else if (error && error.code === 1) {
+          errorMessage = 'Location permission denied. Please grant location access in your browser settings.';
         }
+
+        setLocationError(errorMessage);
+        
+        // Use default location (San Francisco) as fallback
+        const fallbackLocation = { lat: 37.7749, lng: -122.4194 };
+        setUserLocation(fallbackLocation);
+        setLocationError(prev => prev + ' Displaying organizations for San Francisco as a fallback.');
+        await loadOrganizations(fallbackLocation);
+      } finally {
+        setLoading(false);
       }
     };
 
     getUserLocation();
-  }, [user, userRole]);
+  }, []);
 
   // Load organizations based on location and filters
   const loadOrganizations = async (location, query = '', verifiedOnlyFilter = false, donationType = null) => {
@@ -131,18 +113,24 @@ const DiscoverPage = () => {
 
   // Handle donation type change
   const handleDonationTypeChange = async (donationType) => {
-    const newType = selectedDonationType === donationType ? null : donationType; // Toggle off if same type clicked
+    const newType = selectedDonationType === donationType ? null : donationType;
     setSelectedDonationType(newType);
     await loadOrganizations(userLocation, searchQuery, verifiedOnly, newType);
   };
 
   const handleOrganizationClick = async (organization) => {
+    // If user is not logged in, show message to log in
+    if (!user) {
+      alert('Please log in or create an account to place a donation order or contact organizations.');
+      router.push('/connect?role=donor');
+      return;
+    }
+
     // If verified and not a Google Place, go to place order
     if (organization.verified && !organization.isGooglePlace) {
       router.push(`/donor/place-order?orgId=${organization.id}`);
     } else {
       // For unverified organizations, show contact popup
-      // Try to fetch full organization details if it's a registered organization
       let orgDetails = { ...organization };
       
       setLoadingOrgDetails(true);
@@ -166,17 +154,15 @@ const DiscoverPage = () => {
               ...organization,
               phone: placeDetails.formatted_phone_number || placeDetails.international_phone_number || organization.phone || null,
               website: placeDetails.website || organization.website || null,
-              email: organization.email || null, // Google Places doesn't provide email
+              email: organization.email || null,
               address: placeDetails.formatted_address || placeDetails.vicinity || organization.address,
             };
           } catch (error) {
             console.error('Error fetching Google Place details:', error);
-            // Use the organization data we already have
           }
         }
       } catch (error) {
         console.error('Error fetching organization details:', error);
-        // Use the organization data we already have
       } finally {
         setLoadingOrgDetails(false);
       }
@@ -185,8 +171,6 @@ const DiscoverPage = () => {
       setIsContactPopupOpen(true);
     }
   };
-
-  // No loading or geolocation UI for now
 
   return (
     <>
@@ -226,8 +210,15 @@ const DiscoverPage = () => {
               Discover Organizations
             </h1>
             <p className="text-lg text-gray-600">
-              Find nearby organizations that accept menstrual product donations
+              Find nearby organizations that accept donations
             </p>
+            {!user && (
+              <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-md mx-auto">
+                <p className="text-blue-800 text-sm">
+                  <strong>Note:</strong> Please log in to place donation orders or contact organizations.
+                </p>
+              </div>
+            )}
             {locationError && (
               <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3 max-w-md mx-auto">
                 <p className="text-yellow-800 text-sm">{locationError}</p>
@@ -344,7 +335,6 @@ const DiscoverPage = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-bold text-gray-900">{org.name}</h3>
-                      {/* IMPROVED DISPLAY: Distinguish between verified and Google Place */}
                       {org.verified ? (
                         <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
                           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -374,7 +364,6 @@ const DiscoverPage = () => {
                       </svg>
                       {org.address}
                     </p>
-                    {/* FIX: Ensure distance/duration shows up for all organizations */}
                     {org.distance && (
                       <p className="text-pink-600 font-medium mb-2 flex items-center gap-1">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -422,9 +411,13 @@ const DiscoverPage = () => {
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-gray-500">
                     {org.verified && !org.isGooglePlace ? (
-                      <span className="text-green-600 font-medium">✓ Click to place a donation order</span>
+                      <span className={user ? "text-green-600 font-medium" : "text-orange-600 font-medium"}>
+                        {user ? "✓ Click to place a donation order" : "Log in to place a donation order"}
+                      </span>
                     ) : (
-                      <span className="text-orange-600 font-medium">Contact directly or visit in person</span>
+                      <span className={user ? "text-orange-600 font-medium" : "text-orange-600 font-medium"}>
+                        {user ? "Contact directly or visit in person" : "Log in to contact organization"}
+                      </span>
                     )}
                   </div>
                   <button 
@@ -435,7 +428,7 @@ const DiscoverPage = () => {
                         : 'bg-gray-600 text-white hover:bg-gray-700'
                     }`}
                   >
-                    {org.verified && !org.isGooglePlace ? 'Place Order' : 'Contact'}
+                    {org.verified && !org.isGooglePlace ? (user ? 'Place Order' : 'Log In') : (user ? 'Contact' : 'Log In')}
                   </button>
                 </div>
               </div>
@@ -451,12 +444,14 @@ const DiscoverPage = () => {
                 <h4 className="font-semibold text-gray-900 mb-2">Verified Organizations</h4>
                 <p className="text-gray-600 text-sm">
                   Organizations with a ✓ checkmark are verified and accept direct donation orders through our platform.
+                  {!user && " Please log in to place orders."}
                 </p>
               </div>
               <div>
                 <h4 className="font-semibold text-gray-900 mb-2">Unverified Organizations</h4>
                 <p className="text-gray-600 text-sm">
                   These organizations haven't completed verification yet. You can still contact them directly or visit in person.
+                  {!user && " Please log in to contact organizations."}
                 </p>
               </div>
             </div>
@@ -469,3 +464,4 @@ const DiscoverPage = () => {
 };
 
 export default DiscoverPage;
+

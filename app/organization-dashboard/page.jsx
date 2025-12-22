@@ -472,7 +472,17 @@ const OrganizationDashboard = () => {
     return (
       <>
         <EnhancedNavbar />
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center pt-16">
+        <div 
+          className="relative min-h-screen flex items-center justify-center pt-16"
+          style={{
+            backgroundImage: 'url(/background/BackgroundUI.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            minHeight: '100vh'
+          }}
+        >
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-pink-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading your dashboard...</p>
@@ -486,7 +496,17 @@ const OrganizationDashboard = () => {
   return (
     <>
       <EnhancedNavbar />
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pt-16">
+      <div 
+        className="relative min-h-screen pt-16"
+        style={{
+          backgroundImage: 'url(/background/BackgroundUI.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          minHeight: '100vh'
+        }}
+      >
         <div className="px-6 md:px-16 lg:px-32 py-8">
           {/* Header */}
           <div className="text-center mb-8">
